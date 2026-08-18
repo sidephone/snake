@@ -6,8 +6,8 @@ import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.engine.graphics.Snake
 import com.sidephone.snake.engine.graphics.Ground
+import com.sidephone.snake.engine.graphics.Snake
 import com.sidephone.snake.settings.GameplaySettings
 import java.util.concurrent.Executors
 import java.util.concurrent.Future

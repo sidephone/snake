@@ -16,7 +16,7 @@ class Gamepad {
 
 	fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		if (hasKey(keyCode) && event?.repeatCount == 0) {
-			pressedKeys.add(keyCode)
+			pressedKeys.add(normalizeKeyCode(keyCode))
 			return true
 		}
 
@@ -26,7 +26,7 @@ class Gamepad {
 
 	fun onKeyUp(keyCode: Int): Boolean {
 		if (hasKey(keyCode)) {
-			pressedKeys.remove(keyCode)
+			pressedKeys.remove(normalizeKeyCode(keyCode))
 			return true
 		}
 
@@ -41,6 +41,16 @@ class Gamepad {
 
 	private fun hasKey(keyCode: Int): Boolean {
 		return when (keyCode) {
+			// numpad
+			KeyEvent.KEYCODE_2,
+			KeyEvent.KEYCODE_4,
+			KeyEvent.KEYCODE_6,
+			KeyEvent.KEYCODE_8,
+			// sundial
+			KeyEvent.KEYCODE_MEDIA_NEXT,
+			KeyEvent.KEYCODE_MEDIA_PREVIOUS,
+			KeyEvent.KEYCODE_MEDIA_PAUSE,
+			// gamepad
 			KeyEvent.KEYCODE_BUTTON_A,
 			KeyEvent.KEYCODE_BUTTON_B,
 			KeyEvent.KEYCODE_BUTTON_X,
@@ -52,6 +62,21 @@ class Gamepad {
 			KeyEvent.KEYCODE_DPAD_LEFT,
 			KeyEvent.KEYCODE_DPAD_RIGHT -> true
 			else -> false
+		}
+	}
+
+
+	/**
+	 * Normalizes other tiles' key codes to the corresponding gamepad key codes
+	 */
+	private fun normalizeKeyCode(keyCode: Int): Int {
+		return when (keyCode) {
+			KeyEvent.KEYCODE_MEDIA_PAUSE -> KeyEvent.KEYCODE_BUTTON_START
+			KeyEvent.KEYCODE_MEDIA_NEXT, KeyEvent.KEYCODE_6 -> KeyEvent.KEYCODE_DPAD_RIGHT
+			KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_4 -> KeyEvent.KEYCODE_DPAD_LEFT
+			KeyEvent.KEYCODE_2 -> KeyEvent.KEYCODE_DPAD_UP
+			KeyEvent.KEYCODE_8 -> KeyEvent.KEYCODE_DPAD_DOWN
+			else -> keyCode
 		}
 	}
 }
