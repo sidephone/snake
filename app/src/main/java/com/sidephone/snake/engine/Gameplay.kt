@@ -210,7 +210,8 @@ class Gameplay {
 		// the standard movement speed is too fast to be playable, so we skip rendering some frames,
 		// to reduce the perceived game speed
 		iteration++
-		if (iteration % (100f / GameplaySettings.GAME_SPEED).roundToInt() != 0) {
+		val speedFactor = (100f / GameplaySettings.GAME_SPEED).roundToInt().coerceAtLeast(1)
+		if (iteration % speedFactor == 0) {
 			render()
 		}
 	}
