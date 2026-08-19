@@ -31,11 +31,14 @@ class Gameplay {
 	// events
 	private var onPaused = {}
 	private var onStarted = {}
+	internal var isGameOver = false
 
 	// input handling
 	@Volatile private var pressedKeys = setOf<Int>()
 
 	// graphics
+	@Volatile private var viewportWidth = 1f
+	@Volatile private var viewportHeight = 1f
 	@Volatile var currentFrame: GameFrame = GameFrame()
 	@Volatile private var firstIteration = true
 	private var iteration = 0
@@ -43,10 +46,6 @@ class Gameplay {
 	// game objects
 	private val snake = Snake()
 	private val food = Food()
-
-	// game actions and state
-	@Volatile private var viewportWidth = 1f
-	@Volatile private var viewportHeight = 1f
 
 
 	init {
@@ -60,6 +59,7 @@ class Gameplay {
 	@MainThread
 	fun reset() {
 		pressedKeys = setOf()
+		isGameOver = false
 		iteration = 0
 		snake.spawn(viewportWidth, viewportHeight)
 		food.destroy()
@@ -273,6 +273,7 @@ class Gameplay {
 
 		snake.move()
 		if (snake.isAlive(viewportWidth, viewportHeight)) {
+			isGameOver = true
 			isSceneChanged = true
 		}
 
