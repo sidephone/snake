@@ -1,18 +1,22 @@
-package com.sidephone.snake.engine.graphics
+package com.sidephone.snake.engine.entities
 
+import android.util.Log
+import com.sidephone.snake.engine.graphics.DrawCommand
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.sqrt
 
-/**
- * An example on how to use the DrawCommand class to draw a spaceship. You can use this as a reference
- * to create your own game objects.
- */
+
 class Snake {
+	private val LOG_TAG = Snake::class.java.simpleName
+
 	enum class Direction { UP, DOWN, LEFT, RIGHT }
 
 	companion object {
+
 		const val INITIAL_LENGTH = 3.5
-		const val SEGMENT_RADIUS: Float = 8f
+		const val SEGMENT_RADIUS = 10f
+		const val SEGMENT_RADIUS_MIN = SEGMENT_RADIUS * 0.4f
 		const val MOVE_SPEED = SEGMENT_RADIUS * 2 // px per iteration
 
 		object Colors {
@@ -27,11 +31,29 @@ class Snake {
 	private var isAlive = true
 
 
+	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
+		val head = segments.firstOrNull() ?: return false
+
+		if (head.first !in 0f..screenWidth || head.second !in 0f..screenHeight) {
+			isAlive = false
+		}
+
+		for (i in 1 until segments.size) {
+			if (head == segments[i]) {
+				isAlive = false
+				break
+			}
+		}
+
+		return isAlive
+	}
+
+
 	/**
 	 * Create a newborn snake at a random position, heading parallel to the closest screen edge,
 	 * and away from the second-closest edge, and a length of INITIAL_LENGTH segments.
 	 */
-	fun create(screenWidth: Float, screenHeight: Float) {
+	fun spawn(screenWidth: Float, screenHeight: Float) {
 		isAlive = true
 
 		// head position
@@ -61,44 +83,6 @@ class Snake {
 			segments.add(newSegment)
 		}
 	}
-
-
-	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
-		val head = segments.firstOrNull() ?: return false
-
-		if (head.first !in 0f..screenWidth || head.second !in 0f..screenHeight) {
-			isAlive = false
-		}
-
-		for (i in 1 until segments.size) {
-			if (head == segments[i]) {
-				isAlive = false
-				break
-			}
-		}
-
-		return isAlive
-	}
-
-
-	fun draw(): List<DrawCommand> {
-		val drawCommands = mutableListOf<DrawCommand>()
-
-		for (i in segments.size - 1 downTo 0) {
-			var radius = SEGMENT_RADIUS
-			if (i == segments.size - 1) {
-				radius = (SEGMENT_RADIUS * (length - floor(length))).toFloat()
-			}
-
-			val color = if (i == 0) Colors.HEAD else Colors.BODY
-			val (x, y) = segments[i]
-
-			drawCommands.add(DrawCommand.Circle(x, y, radius, color, true))
-		}
-
-		return drawCommands
-	}
-
 
 	fun move() {
 		if (segments.isEmpty() || !isAlive) {
@@ -131,5 +115,48 @@ class Snake {
 			Direction.LEFT -> if (direction != Direction.RIGHT) this.direction = direction
 			Direction.RIGHT -> if (direction != Direction.LEFT) this.direction = direction
 		}
+	}
+
+
+	fun canEat(food: Food): Boolean {
+		val head = segments.firstOrNull() ?: Pair(0f, 0f)
+		val foodPos = food.position()
+		val distanceX = head.first - foodPos.first
+		val distanceY = head.second - foodPos.second
+
+		val distance = sqrt((distanceX * distanceX + distanceY * distanceY).toDouble())
+		return distance <= SEGMENT_RADIUS + food.radius()
+	}
+
+
+	fun eat(food: Food) {
+		length += food.amount()
+		val newSegmentCount = ceil(length)
+		while (segments.size < newSegmentCount) {
+			segments.add(segments.last())
+		}
+
+		Log.d(LOG_TAG, "Snake ate ${food.amount()}. New length: $length, segments: ${segments.size}")
+	}
+
+
+	fun draw(): List<DrawCommand> {
+		val drawCommands = mutableListOf<DrawCommand>()
+
+		for (i in segments.size - 1 downTo 0) {
+			var radius = SEGMENT_RADIUS
+			if (i == segments.size - 1) {
+				radius = (SEGMENT_RADIUS * (length - floor(length)))
+					.toFloat()
+					.coerceAtLeast(SEGMENT_RADIUS_MIN)
+			}
+
+			val color = if (i == 0) Colors.HEAD else Colors.BODY
+			val (x, y) = segments[i]
+
+			drawCommands.add(DrawCommand.Circle(x, y, radius, color, true))
+		}
+
+		return drawCommands
 	}
 }

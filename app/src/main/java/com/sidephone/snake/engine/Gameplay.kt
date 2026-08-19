@@ -5,9 +5,11 @@ import android.view.KeyEvent
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import com.sidephone.snake.engine.entities.Food
 import com.sidephone.snake.engine.graphics.GameFrame
 import com.sidephone.snake.engine.graphics.Ground
-import com.sidephone.snake.engine.graphics.Snake
+import com.sidephone.snake.engine.entities.Snake
+import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.settings.GameplaySettings
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -36,8 +38,11 @@ class Gameplay {
 	// graphics
 	@Volatile var currentFrame: GameFrame = GameFrame()
 	@Volatile private var firstIteration = true
-	private val snake = Snake()
 	private var iteration = 0
+
+	// game objects
+	private val snake = Snake()
+	private val food = Food()
 
 	// game actions and state
 	@Volatile private var viewportWidth = 1f
@@ -56,7 +61,7 @@ class Gameplay {
 	fun reset() {
 		pressedKeys = setOf()
 		iteration = 0
-		snake.create(viewportWidth, viewportHeight)
+		snake.spawn(viewportWidth, viewportHeight)
 
 		if (!isGameThreadAlive()) {
 			if (!executor.isShutdown && !executor.isTerminated) {
@@ -265,10 +270,19 @@ class Gameplay {
 	private fun render() {
 		var isSceneChanged = false
 
-
-
 		snake.move()
 		if (snake.isAlive(viewportWidth, viewportHeight)) {
+			isSceneChanged = true
+		}
+
+		if (snake.canEat(food)) {
+			snake.eat(food)
+			food.destroy()
+			isSceneChanged = true
+		}
+
+		if (!food.exists()) {
+			food.spawn(viewportWidth, viewportHeight)
 			isSceneChanged = true
 		}
 
@@ -281,6 +295,9 @@ class Gameplay {
 			return
 		}
 
-		currentFrame = GameFrame(Ground.BACKGROUND, snake.draw())
+		val drawCommands = mutableListOf<DrawCommand>()
+		drawCommands.addAll(snake.draw())
+		drawCommands.addAll(food.draw())
+		currentFrame = GameFrame(Ground.BACKGROUND, drawCommands)
 	}
 }
