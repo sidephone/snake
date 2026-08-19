@@ -1,5 +1,8 @@
 package com.sidephone.snake.engine.graphics
 
+import kotlin.math.ceil
+import kotlin.math.floor
+
 /**
  * An example on how to use the DrawCommand class to draw a spaceship. You can use this as a reference
  * to create your own game objects.
@@ -8,7 +11,7 @@ class Snake {
 	enum class Direction { UP, DOWN, LEFT, RIGHT }
 
 	companion object {
-		const val INITIAL_LENGTH = 4
+		const val INITIAL_LENGTH = 3.5
 		const val SEGMENT_RADIUS: Float = 8f
 		const val MOVE_SPEED = SEGMENT_RADIUS * 2 // px per iteration
 
@@ -20,6 +23,7 @@ class Snake {
 
 	private var direction = Direction.UP
 	private var segments = mutableListOf<Pair<Float, Float>>() // List of (x, y) positions of the snake segments
+	private var length = INITIAL_LENGTH
 	private var isAlive = true
 
 
@@ -29,7 +33,6 @@ class Snake {
 	 */
 	fun create(screenWidth: Float, screenHeight: Float) {
 		isAlive = true
-		segments.clear()
 
 		// head position
 		val startX = (SEGMENT_RADIUS * 2f) + (Math.random() * (screenWidth - SEGMENT_RADIUS * 4)).toFloat()
@@ -45,12 +48,15 @@ class Snake {
 		segments.add(Pair(startX, startY))
 
 		// body
-		for (i in 1 until INITIAL_LENGTH) {
+		length = INITIAL_LENGTH
+		segments.clear()
+
+		for (i in 1 until 1 + ceil(length).toInt()) {
 			val newSegment = when (direction) {
-			Direction.UP -> Pair(startX, startY + (i * MOVE_SPEED))
-			Direction.DOWN -> Pair(startX, startY - (i * MOVE_SPEED))
-			Direction.LEFT -> Pair(startX + (i * MOVE_SPEED), startY)
-			Direction.RIGHT -> Pair(startX - (i * MOVE_SPEED), startY)
+				Direction.UP -> Pair(startX, startY + (i * MOVE_SPEED))
+				Direction.DOWN -> Pair(startX, startY - (i * MOVE_SPEED))
+				Direction.LEFT -> Pair(startX + (i * MOVE_SPEED), startY)
+				Direction.RIGHT -> Pair(startX - (i * MOVE_SPEED), startY)
 			}
 			segments.add(newSegment)
 		}
@@ -78,10 +84,16 @@ class Snake {
 	fun draw(): List<DrawCommand> {
 		val drawCommands = mutableListOf<DrawCommand>()
 
-		var color = Colors.HEAD
-		for ((x, y) in segments) {
-			drawCommands.add(DrawCommand.Circle(x, y, SEGMENT_RADIUS, color, true))
-			color = Colors.BODY
+		for (i in segments.size - 1 downTo 0) {
+			var radius = SEGMENT_RADIUS
+			if (i == segments.size - 1) {
+				radius = (SEGMENT_RADIUS * (length - floor(length))).toFloat()
+			}
+
+			val color = if (i == 0) Colors.HEAD else Colors.BODY
+			val (x, y) = segments[i]
+
+			drawCommands.add(DrawCommand.Circle(x, y, radius, color, true))
 		}
 
 		return drawCommands
