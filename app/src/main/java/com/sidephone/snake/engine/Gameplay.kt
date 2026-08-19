@@ -62,6 +62,7 @@ class Gameplay {
 		pressedKeys = setOf()
 		iteration = 0
 		snake.spawn(viewportWidth, viewportHeight)
+		food.destroy()
 
 		if (!isGameThreadAlive()) {
 			if (!executor.isShutdown && !executor.isTerminated) {
