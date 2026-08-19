@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.sidephone.snake.R
 import com.sidephone.snake.ui.theme.Dimens
 import com.sidephone.snake.util.MenuButton
-import com.sidephone.snake.util.clickableWithGamepadStart
+import com.sidephone.snake.util.GamepadClickableButton
 
 @Composable
 fun MainMenuScreen(
@@ -71,7 +71,7 @@ fun MainMenuScreen(
 						firstButtonFocusRequester.requestFocus()
 					}
 				}
-				.clickableWithGamepadStart(onNewGame)
+				.GamepadClickableButton(onNewGame)
 		) {
 			Text(stringResource(
 					if (isGamePaused) R.string.menu_resume_game else R.string.menu_new_game
@@ -81,7 +81,7 @@ fun MainMenuScreen(
 		if (isGamePaused) {
 			MenuButton(
 				onClick = onEndGame,
-				modifier = buttonModifiers.clickableWithGamepadStart(onEndGame)
+				modifier = buttonModifiers.GamepadClickableButton(onEndGame)
 			) {
 				Text(stringResource(R.string.menu_end_game))
 			}
@@ -89,7 +89,7 @@ fun MainMenuScreen(
 
 		MenuButton(
 			onClick = onExit,
-			modifier = buttonModifiers.clickableWithGamepadStart(onExit)
+			modifier = buttonModifiers.GamepadClickableButton(onExit)
 		) {
 			Text(stringResource(R.string.menu_exit))
 		}
