@@ -47,10 +47,10 @@ class Snake {
 		// body
 		for (i in 1 until INITIAL_LENGTH) {
 			val newSegment = when (direction) {
-				Direction.UP -> Pair(startX, startY + (i * SEGMENT_RADIUS))
-				Direction.DOWN -> Pair(startX, startY - (i * SEGMENT_RADIUS))
-				Direction.LEFT -> Pair(startX + (i * SEGMENT_RADIUS), startY)
-				Direction.RIGHT -> Pair(startX - (i * SEGMENT_RADIUS), startY)
+			Direction.UP -> Pair(startX, startY + (i * MOVE_SPEED))
+			Direction.DOWN -> Pair(startX, startY - (i * MOVE_SPEED))
+			Direction.LEFT -> Pair(startX + (i * MOVE_SPEED), startY)
+			Direction.RIGHT -> Pair(startX - (i * MOVE_SPEED), startY)
 			}
 			segments.add(newSegment)
 		}
