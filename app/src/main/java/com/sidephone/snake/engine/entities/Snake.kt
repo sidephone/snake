@@ -146,9 +146,9 @@ class Snake {
 		for (i in segments.size - 1 downTo 0) {
 			var radius = SEGMENT_RADIUS
 			if (i == segments.size - 1) {
-				radius = (SEGMENT_RADIUS * (length - floor(length)))
-					.toFloat()
-					.coerceAtLeast(SEGMENT_RADIUS_MIN)
+				val lengthExp = floor(length)
+				val radiusMultipler = if (lengthExp == length) 1 else (length - lengthExp)
+				radius = (SEGMENT_RADIUS * radiusMultipler.toFloat()).coerceAtLeast(SEGMENT_RADIUS_MIN)
 			}
 
 			val color = if (i == 0) Colors.HEAD else Colors.BODY
