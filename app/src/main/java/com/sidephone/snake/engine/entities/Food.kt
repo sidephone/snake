@@ -27,8 +27,10 @@ class Food {
 		amount = 0.5f + Math.random().toFloat() * 1.5f
 		radius = amount * Snake.SEGMENT_RADIUS
 
-		val x = (Math.random() * (screenWidth - radius * 4)).toFloat()
-		val y = (Math.random() * (screenHeight - radius * 4)).toFloat()
+		val maxX = (screenWidth - radius * 4f).coerceAtLeast(0f)
+		val maxY = (screenHeight - radius * 4f).coerceAtLeast(0f)
+		val x = radius * 2f + (Math.random().toFloat() * maxX)
+		val y = radius * 2f + (Math.random().toFloat() * maxY)
 
 		position = Pair(x, y)
 	}
