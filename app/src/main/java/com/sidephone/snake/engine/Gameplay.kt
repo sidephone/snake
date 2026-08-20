@@ -306,7 +306,7 @@ class Gameplay {
 		if (snake.canEat(food)) {
 			snake.eat(food)
 			food.destroy()
-			_score.value = snake.length() - Snake.INITIAL_LENGTH.toInt()
+			_score.value = snake.length() - Snake.INITIAL_LENGTH.roundToInt()
 			isSceneChanged = true
 		}
 
