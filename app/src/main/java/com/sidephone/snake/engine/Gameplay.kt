@@ -40,7 +40,6 @@ class Gameplay {
 	private val _isGameOver = MutableStateFlow(false)
 	val isGameOver: StateFlow<Boolean> = _isGameOver
 
-
 	// graphics
 	@Volatile private var viewportWidth = 1f
 	@Volatile private var viewportHeight = 1f
@@ -63,17 +62,18 @@ class Gameplay {
 	 */
 	@MainThread
 	fun reset() {
-		pressedKeys = setOf()
-		_isGameOver.value = false
-		iteration = 0
-		snake.spawn(viewportWidth, viewportHeight)
-		food.destroy()
-
 		if (!isGameThreadAlive()) {
 			if (!executor.isShutdown && !executor.isTerminated) {
 				executor.shutdownNow()
 			}
 		}
+
+		pressedKeys = setOf()
+		_isGameOver.value = false
+		iteration = 0
+		snake.spawn(viewportWidth, viewportHeight)
+		food.destroy()
+		currentFrame = GameFrame(Ground.BACKGROUND, emptyList())
 	}
 
 
