@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var recordHighScore by remember { mutableStateOf<Int?>(null) }
-				val highScores = remember { HighScores() }
+				val highScores = HighScores()
 
 				settings.loadHighScores(highScores)
 
