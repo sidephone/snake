@@ -2,7 +2,7 @@ package com.sidephone.snake.engine
 
 class HighScores {
 	companion object {
-		private const val MAX = 10
+		const val MAX = 10
 	}
 	private val scores = mutableListOf<Pair<String, Int>>()
 
@@ -15,8 +15,13 @@ class HighScores {
 	}
 
 
+	fun clear() {
+		scores.clear()
+	}
+
+
 	fun getAll(): List<Pair<String, Int>> {
-		return scores
+		return scores.toList()
 	}
 
 

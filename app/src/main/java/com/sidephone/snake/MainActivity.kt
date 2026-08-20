@@ -18,11 +18,12 @@ import androidx.compose.ui.Modifier
 import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.engine.HighScores
-import com.sidephone.snake.screens.ScreenType
 import com.sidephone.snake.screens.HighScoresScreen
 import com.sidephone.snake.screens.MainMenuScreen
 import com.sidephone.snake.screens.RecordHighScoreScreen
+import com.sidephone.snake.screens.ScreenType
 import com.sidephone.snake.screens.game.GameScreen
+import com.sidephone.snake.settings.SettingsStore
 import com.sidephone.snake.ui.theme.SidesnakeTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,10 +36,14 @@ class MainActivity : ComponentActivity() {
 		enableEdgeToEdge()
 		setContent {
 			SidesnakeTheme {
+				val settings = SettingsStore(this)
+
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var recordHighScore by remember { mutableStateOf<Int?>(null) }
 				val highScores = remember { HighScores() }
+
+				settings.loadHighScores(highScores)
 
 				// Back button/gesture returns to the menu from any sub-screen
 				BackHandler(enabled = currentScreen != ScreenType.Menu) {
@@ -90,6 +95,7 @@ class MainActivity : ComponentActivity() {
 								newScore = recordHighScore ?: 0,
 								onNameEntered = { playerName ->
 									highScores.addScore(playerName, recordHighScore ?: 0)
+									settings.saveHighScores(highScores)
 									recordHighScore = null
 									currentScreen = ScreenType.Menu
 								}
