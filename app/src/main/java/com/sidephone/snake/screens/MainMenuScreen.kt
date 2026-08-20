@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.sidephone.snake.R
 import com.sidephone.snake.ui.theme.Dimens
-import com.sidephone.snake.util.MenuButton
 import com.sidephone.snake.util.GamepadClickableButton
+import com.sidephone.snake.util.MenuButton
 
 @Composable
 fun MainMenuScreen(
@@ -29,6 +29,7 @@ fun MainMenuScreen(
 	isGamePaused: Boolean = false,
 	onNewGame: () -> Unit,
 	onEndGame: () -> Unit,
+	onHighScores: () -> Unit,
 	onExit: () -> Unit
 ) {
 	val firstButtonFocusRequester = remember { FocusRequester() }
@@ -74,7 +75,7 @@ fun MainMenuScreen(
 				.GamepadClickableButton(onNewGame)
 		) {
 			Text(stringResource(
-					if (isGamePaused) R.string.menu_resume_game else R.string.menu_new_game
+					if (isGamePaused) R.string.main_resume_game else R.string.main_new_game
 			))
 		}
 
@@ -83,15 +84,22 @@ fun MainMenuScreen(
 				onClick = onEndGame,
 				modifier = buttonModifiers.GamepadClickableButton(onEndGame)
 			) {
-				Text(stringResource(R.string.menu_end_game))
+				Text(stringResource(R.string.main_end_game))
 			}
+		}
+
+		MenuButton(
+			onClick = onHighScores,
+			modifier = buttonModifiers.GamepadClickableButton(onHighScores)
+		) {
+			Text(stringResource(R.string.main_high_scores))
 		}
 
 		MenuButton(
 			onClick = onExit,
 			modifier = buttonModifiers.GamepadClickableButton(onExit)
 		) {
-			Text(stringResource(R.string.menu_exit))
+			Text(stringResource(R.string.main_exit))
 		}
 	}
 }

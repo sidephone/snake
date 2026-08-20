@@ -19,13 +19,10 @@ import com.sidephone.snake.R
 import com.sidephone.snake.ui.theme.Dimens
 
 @Composable
-fun GameOverOverlay() {
-	val hudTextColor = Color.White
-	val hudGameOverMaskColor = Color.Black.copy(alpha = 0.4f)
-
+fun GameOverOverlay(textColor: Color, backgroundColor: Color) {
 	Column(
 		modifier = Modifier
-			.background(hudGameOverMaskColor)
+			.background(backgroundColor)
 			.fillMaxSize()
 			.padding(16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
@@ -38,7 +35,7 @@ fun GameOverOverlay() {
 			) {
 				Text(
 					text = stringResource(R.string.game_over),
-					color = hudTextColor,
+					color = textColor,
 					modifier = Modifier.padding(bottom = Dimens.MainMenuTitlePaddingBottom).fillMaxWidth(),
 					fontSize = MaterialTheme.typography.headlineLarge.fontSize,
 					textAlign = TextAlign.Center
@@ -46,7 +43,7 @@ fun GameOverOverlay() {
 
 				Text(
 					text = stringResource(R.string.game_over_subtitle),
-					color = hudTextColor,
+					color = textColor,
 					modifier = Modifier.fillMaxWidth(),
 					fontSize = MaterialTheme.typography.bodyLarge.fontSize,
 					textAlign = TextAlign.Center

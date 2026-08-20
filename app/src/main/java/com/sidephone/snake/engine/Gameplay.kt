@@ -34,11 +34,14 @@ class Gameplay {
 	@Volatile private var pressedKeys = setOf<Int>()
 
 	// output
-	private var onStartButtonPressed = {}
+	private var onStartButtonPressed: (wasGameOver: Boolean, score: Int) -> Unit = { _, _ -> }
 	private var onStarted = {}
 
 	private val _isGameOver = MutableStateFlow(false)
 	val isGameOver: StateFlow<Boolean> = _isGameOver
+
+	private val _score = MutableStateFlow(0)
+	val score: StateFlow<Int> = _score
 
 	// graphics
 	@Volatile private var viewportWidth = 1f
@@ -73,6 +76,7 @@ class Gameplay {
 		iteration = 0
 		snake.spawn(viewportWidth, viewportHeight)
 		food.destroy()
+		_score.value = 0
 		currentFrame = GameFrame(Ground.BACKGROUND, emptyList())
 	}
 
@@ -182,6 +186,9 @@ class Gameplay {
 
 	@MainThread
 	fun onStartButton() {
+		val wasGameOver = _isGameOver.value
+		val currentScore = _score.value
+
 		if (_isGameOver.value) {
 			stop()
 			reset()
@@ -189,7 +196,7 @@ class Gameplay {
 			pause()
 		}
 
-		onStartButtonPressed()
+		onStartButtonPressed(wasGameOver, currentScore)
 	}
 
 
@@ -198,7 +205,7 @@ class Gameplay {
 	 * back to the main menu or perform other actions.
 	 */
 	@MainThread
-	fun setOnStartButtonPressedCallback(callback: () -> Unit): Gameplay {
+	fun setOnStartButtonPressedCallback(callback: (wasGameOver: Boolean, score: Int) -> Unit): Gameplay {
 		onStartButtonPressed = callback
 		return this
 	}
@@ -299,6 +306,7 @@ class Gameplay {
 		if (snake.canEat(food)) {
 			snake.eat(food)
 			food.destroy()
+			_score.value = snake.length() - Snake.INITIAL_LENGTH.toInt()
 			isSceneChanged = true
 		}
 

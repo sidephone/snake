@@ -3,7 +3,7 @@
 A snake game for Sidephone
 
 ## TODO
-- high score
+- full screen
 - better visual style
 - enable build optimizations to reduce APK size
 - slithering animation

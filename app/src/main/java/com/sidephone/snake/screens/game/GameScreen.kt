@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.sidephone.snake.engine.Gameplay
@@ -13,8 +14,9 @@ import com.sidephone.snake.engine.Gameplay
 
 @Composable
 fun GameScreen(gameplay: Gameplay) {
+	val hudTextColor = Color.White
+	val hudGameOverBackground = Color.Black.copy(alpha = 0.4f)
 	val menuBackground = MaterialTheme.colorScheme.background.toArgb()
-
 	val isGameOver by gameplay.isGameOver.collectAsState()
 
 	AndroidView(
@@ -22,7 +24,9 @@ fun GameScreen(gameplay: Gameplay) {
 		factory = { context -> GameSurfaceView(context, gameplay, menuBackground) },
 	)
 
+	ScoreOverlay(hudTextColor, gameplay)
+
 	if (isGameOver) {
-		GameOverOverlay()
+		GameOverOverlay(hudTextColor, hudGameOverBackground)
 	}
 }
