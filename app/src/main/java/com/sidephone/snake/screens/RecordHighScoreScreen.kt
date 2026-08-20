@@ -59,8 +59,13 @@ fun RecordHighScoreScreen(newScore: Int, onNameEntered: (String) -> Unit) {
 						.onKeyEvent(
 						onKeyEvent = { keyEvent ->
 							val keyCode = keyEvent.nativeKeyEvent.keyCode
+							val isConfirmKey = keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_BUTTON_A || keyCode == KeyEvent.KEYCODE_BUTTON_B
 
-							if (keyCode in listOf(KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_BUTTON_START, KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_BUTTON_B)) {
+							if (!isConfirmKey) {
+								return@onKeyEvent false
+							}
+
+							if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
 								var trimmedName = playerName.trim()
 								if (trimmedName.isEmpty()) {
 									trimmedName = defaultName

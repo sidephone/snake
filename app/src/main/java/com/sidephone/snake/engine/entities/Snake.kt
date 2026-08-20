@@ -48,7 +48,7 @@ class Snake {
 	}
 
 
-	fun length(): Int {
+	fun segments(): Int {
 		return ceil(length).toInt()
 	}
 
