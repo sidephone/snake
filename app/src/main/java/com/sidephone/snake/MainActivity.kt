@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 				var currentScreen by remember { mutableStateOf(Screen.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var recordHighScore by remember { mutableStateOf<Int?>(null) }
-				val highScores by remember { mutableStateOf(HighScores()) }
+				val highScores = remember { HighScores() }
 
 				// Back button/gesture returns to the menu from any sub-screen
 				BackHandler(enabled = currentScreen != Screen.Menu) {
