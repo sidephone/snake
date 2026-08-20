@@ -6,11 +6,13 @@ import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.sidephone.snake.engine.entities.Food
-import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.engine.graphics.Ground
 import com.sidephone.snake.engine.entities.Snake
 import com.sidephone.snake.engine.graphics.DrawCommand
+import com.sidephone.snake.engine.graphics.GameFrame
+import com.sidephone.snake.engine.graphics.Ground
 import com.sidephone.snake.settings.GameplaySettings
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import kotlin.math.roundToInt
@@ -26,15 +28,18 @@ class Gameplay {
 	// game loop
 	private var executor = Executors.newSingleThreadScheduledExecutor()
 	private var engineLooper: Future<*>? = null
-	private var isPaused = false
+	@Volatile private var isPaused = false
 
-	// events
-	private var onPaused = {}
-	private var onStarted = {}
-	internal var isGameOver = false
-
-	// input handling
+	// input
 	@Volatile private var pressedKeys = setOf<Int>()
+
+	// output
+	private var onStartButtonPressed = {}
+	private var onStarted = {}
+
+	private val _isGameOver = MutableStateFlow(false)
+	val isGameOver: StateFlow<Boolean> = _isGameOver
+
 
 	// graphics
 	@Volatile private var viewportWidth = 1f
@@ -59,7 +64,7 @@ class Gameplay {
 	@MainThread
 	fun reset() {
 		pressedKeys = setOf()
-		isGameOver = false
+		_isGameOver.value = false
 		iteration = 0
 		snake.spawn(viewportWidth, viewportHeight)
 		food.destroy()
@@ -68,7 +73,6 @@ class Gameplay {
 			if (!executor.isShutdown && !executor.isTerminated) {
 				executor.shutdownNow()
 			}
-			executor = Executors.newSingleThreadScheduledExecutor()
 		}
 	}
 
@@ -113,6 +117,7 @@ class Gameplay {
 			return
 		}
 
+		executor = Executors.newSingleThreadScheduledExecutor()
 		isPaused = false
 		firstIteration = true
 
@@ -140,7 +145,6 @@ class Gameplay {
 
 		engineLooper?.cancel(true)
 		isPaused = true
-		onPaused()
 
 		Log.d(LOG_TAG, "Gameplay loop paused")
 	}
@@ -170,9 +174,22 @@ class Gameplay {
 	/**
 	 * A utility function that returns true if the game loop is currently paused.
 	 */
-	@MainThread
+	@AnyThread
 	fun isPaused(): Boolean {
 		return isPaused
+	}
+
+
+	@MainThread
+	fun onStartButton() {
+		if (_isGameOver.value) {
+			stop()
+			reset()
+		} else {
+			pause()
+		}
+
+		onStartButtonPressed()
 	}
 
 
@@ -181,8 +198,8 @@ class Gameplay {
 	 * back to the main menu or perform other actions.
 	 */
 	@MainThread
-	fun setOnPausedCallback(callback: () -> Unit): Gameplay {
-		onPaused = callback
+	fun setOnStartButtonPressedCallback(callback: () -> Unit): Gameplay {
+		onStartButtonPressed = callback
 		return this
 	}
 
@@ -200,7 +217,7 @@ class Gameplay {
 	/**
 	 * Returns true when the game thread executor is still working.
 	 */
-	@MainThread
+	@AnyThread
 	private fun isGameThreadAlive(): Boolean {
 		return !executor.isShutdown && !executor.isTerminated && (engineLooper?.isDone == false)
 	}
@@ -233,7 +250,7 @@ class Gameplay {
 	@MainThread
 	private fun preprocessInput() {
 		if (KeyEvent.KEYCODE_BUTTON_START in pressedKeys) {
-			pause()
+			onStartButton()
 		}
 	}
 
@@ -269,12 +286,14 @@ class Gameplay {
 	 */
 	@WorkerThread
 	private fun render() {
-		var isSceneChanged = false
+		var isSceneChanged: Boolean
 
 		snake.move()
 		if (snake.isAlive(viewportWidth, viewportHeight)) {
-			isGameOver = true
 			isSceneChanged = true
+		} else {
+			isSceneChanged = !isGameOver.value
+			_isGameOver.value = true
 		}
 
 		if (snake.canEat(food)) {
