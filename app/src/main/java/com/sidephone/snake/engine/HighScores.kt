@@ -4,14 +4,13 @@ class HighScores {
 	companion object {
 		private const val MAX = 10
 	}
-	var scores: MutableList<Pair<String, Int>> = mutableListOf()
-
+	private val scores = mutableListOf<Pair<String, Int>>()
 
 	fun addScore(name: String, score: Int) {
-		scores.add(Pair(name, score))
+		scores.add(name to score)
 		scores.sortByDescending { it.second }
 		if (scores.size > MAX) {
-			scores = scores.take(MAX).toMutableList()
+			scores.subList(MAX, scores.size).clear()
 		}
 	}
 
