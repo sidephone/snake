@@ -18,17 +18,12 @@ import androidx.compose.ui.Modifier
 import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.engine.HighScores
+import com.sidephone.snake.screens.ScreenType
 import com.sidephone.snake.screens.HighScoresScreen
 import com.sidephone.snake.screens.MainMenuScreen
 import com.sidephone.snake.screens.RecordHighScoreScreen
 import com.sidephone.snake.screens.game.GameScreen
 import com.sidephone.snake.ui.theme.SidesnakeTheme
-
-
-private enum class Screen {
-    Menu, Game, HighScores, RecordHighScore
-}
-
 
 class MainActivity : ComponentActivity() {
 	private var gamepad = Gamepad()
@@ -40,38 +35,38 @@ class MainActivity : ComponentActivity() {
 		enableEdgeToEdge()
 		setContent {
 			SidesnakeTheme {
-				var currentScreen by remember { mutableStateOf(Screen.Menu) }
+				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var recordHighScore by remember { mutableStateOf<Int?>(null) }
 				val highScores = remember { HighScores() }
 
 				// Back button/gesture returns to the menu from any sub-screen
-				BackHandler(enabled = currentScreen != Screen.Menu) {
-					if (currentScreen == Screen.Game) {
+				BackHandler(enabled = currentScreen != ScreenType.Menu) {
+					if (currentScreen == ScreenType.Game) {
 						gameplay.onStartButton()
 					} else {
-						if (currentScreen == Screen.RecordHighScore) {
+						if (currentScreen == ScreenType.RecordHighScore) {
 							recordHighScore = null
 						}
-						currentScreen = Screen.Menu
+						currentScreen = ScreenType.Menu
 					}
 				}
 
 				Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 					Box(modifier = Modifier.padding(innerPadding)) {
-						GameScreen(gameplay) // Keep this in memory due to an Android bug. See below.
+						GameScreen(gameplay, currentScreen) // Keep this in memory due to an Android bug. See below.
 
 						when (currentScreen) {
-							Screen.Menu -> MainMenuScreen(
+							ScreenType.Menu -> MainMenuScreen(
 								isGamePaused = isGamePaused,
 								onExit = { finish() },
-								onHighScores = { currentScreen = Screen.HighScores },
+								onHighScores = { currentScreen = ScreenType.HighScores },
 								onEndGame = {
 									gameplay.stop()
 									isGamePaused = gameplay.isPaused()
 								},
 								onNewGame = {
-									currentScreen = Screen.Game
+									currentScreen = ScreenType.Game
 
 									gamepad.reset()
 
@@ -82,24 +77,24 @@ class MainActivity : ComponentActivity() {
 											isGamePaused = gameplay.isPaused()
 											if (isGameOver && highScores.isHighScore(score)) {
 												recordHighScore = score
-												currentScreen = Screen.RecordHighScore
+												currentScreen = ScreenType.RecordHighScore
 											} else {
-												currentScreen = Screen.Menu
+												currentScreen = ScreenType.Menu
 											}
 										}
 										.start()
 								},
 							)
-							Screen.HighScores -> { HighScoresScreen(highScores) }
-							Screen.RecordHighScore -> RecordHighScoreScreen(
+							ScreenType.HighScores -> { HighScoresScreen(highScores) }
+							ScreenType.RecordHighScore -> RecordHighScoreScreen(
 								newScore = recordHighScore ?: 0,
 								onNameEntered = { playerName ->
 									highScores.addScore(playerName, recordHighScore ?: 0)
 									recordHighScore = null
-									currentScreen = Screen.Menu
+									currentScreen = ScreenType.Menu
 								}
 							)
-							Screen.Game -> {
+							ScreenType.Game -> {
 								// Due to an Android bug, we initialize the screen at the beginning and keep the
 								// object alive all the time. Otherwise, we can't make it render after returning from
 								// paused state, because its surfaceCreated() method is not called again.
