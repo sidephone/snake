@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 				// Back button/gesture returns to the menu from any sub-screen
 				BackHandler(enabled = currentScreen != Screen.Menu) {
 					if (currentScreen == Screen.Game) {
-						gameplay.pause()
+						gameplay.onStartButton()
 					} else {
 						currentScreen = Screen.Menu
 					}
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
 									if (!gameplay.isPaused()) gameplay.reset()
 									gameplay
-										.setOnPausedCallback {
+										.setOnStartButtonPressedCallback {
 											isGamePaused = gameplay.isPaused()
 											currentScreen = Screen.Menu
 										}

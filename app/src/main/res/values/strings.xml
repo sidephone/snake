@@ -1,5 +1,7 @@
 <resources>
 	<string name="app_name">SideSnake</string>
+	<string name="game_over">Game Over</string>
+	<string name="game_over_subtitle">Press Start or Enter to return to main menu</string>
 	<string name="menu_new_game">New Game</string>
 	<string name="menu_resume_game">Resume Game</string>
 	<string name="menu_end_game">End Current Game</string>
