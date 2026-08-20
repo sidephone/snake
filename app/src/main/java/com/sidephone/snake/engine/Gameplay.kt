@@ -117,7 +117,7 @@ class Gameplay {
 			return
 		}
 
-		executor = Executors.newSingleThreadScheduledExecutor()
+		if (executor.isShutdown || executor.isTerminated) executor = Executors.newSingleThreadScheduledExecutor()
 		isPaused = false
 		firstIteration = true
 
