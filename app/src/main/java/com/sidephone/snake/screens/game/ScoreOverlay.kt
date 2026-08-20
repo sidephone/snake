@@ -14,7 +14,6 @@ import com.sidephone.snake.engine.Gameplay
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sidephone.snake.ui.theme.Dimens
 
 @Composable
 fun ScoreOverlay(textColor: Color, gameplay: Gameplay) {
