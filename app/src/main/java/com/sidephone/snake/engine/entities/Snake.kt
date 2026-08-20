@@ -13,7 +13,6 @@ class Snake {
 	enum class Direction { UP, DOWN, LEFT, RIGHT }
 
 	companion object {
-
 		const val INITIAL_LENGTH = 3.5
 		const val SEGMENT_RADIUS = 10f
 		const val SEGMENT_RADIUS_MIN = SEGMENT_RADIUS * 0.4f
@@ -46,6 +45,11 @@ class Snake {
 		}
 
 		return isAlive
+	}
+
+
+	fun segments(): Int {
+		return ceil(length).toInt()
 	}
 
 
@@ -147,8 +151,8 @@ class Snake {
 			var radius = SEGMENT_RADIUS
 			if (i == segments.size - 1) {
 				val lengthExp = floor(length)
-				val radiusMultipler = if (lengthExp == length) 1 else (length - lengthExp)
-				radius = (SEGMENT_RADIUS * radiusMultipler.toFloat()).coerceAtLeast(SEGMENT_RADIUS_MIN)
+				val radiusMultiplier = if (lengthExp == length) 1 else (length - lengthExp)
+				radius = (SEGMENT_RADIUS * radiusMultiplier.toFloat()).coerceAtLeast(SEGMENT_RADIUS_MIN)
 			}
 
 			val color = if (i == 0) Colors.HEAD else Colors.BODY

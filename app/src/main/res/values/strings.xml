@@ -1,9 +1,20 @@
 <resources>
 	<string name="app_name">SideSnake</string>
+
 	<string name="game_over">Game Over</string>
 	<string name="game_over_subtitle">Press Start or Enter to return to main menu</string>
-	<string name="menu_new_game">New Game</string>
-	<string name="menu_resume_game">Resume Game</string>
-	<string name="menu_end_game">End Current Game</string>
-	<string name="menu_exit">Exit</string>
+	<string name="game_score">Score: %1$d</string>
+
+	<string name="high_scores_title">High Scores</string>
+	<string name="high_scores_empty">No high scores yet!</string>
+
+	<string name="main_new_game">New Game</string>
+	<string name="main_resume_game">Resume Game</string>
+	<string name="main_end_game">End Current Game</string>
+	<string name="main_high_scores">High Scores</string>
+	<string name="main_exit">Exit</string>
+
+	<string name="record_high_score_title">New High Score!</string>
+	<string name="record_high_score_enter_your_name">Enter your name:</string>
+	<string name="record_high_score_default_name">Player</string>
 </resources>
