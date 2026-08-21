@@ -314,6 +314,10 @@ class Gameplay {
 
 		if (!food.exists()) {
 			food.spawn(viewportWidth, viewportHeight)
+			if (snake.isShort() && food.amount() < 0f) {
+				food.spawn(viewportWidth, viewportHeight)
+			}
+
 			isSceneChanged = true
 		}
 
