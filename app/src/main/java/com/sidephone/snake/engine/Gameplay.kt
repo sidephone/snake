@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
  * It is designed to be simple and easy to understand, so you can modify it to create your own game.
  */
 class Gameplay {
-	companion object{
+	companion object {
 		private val LOG_TAG = Gameplay::class.java.simpleName
 	}
 
