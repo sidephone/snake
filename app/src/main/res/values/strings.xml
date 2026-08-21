@@ -8,6 +8,7 @@
 	<string name="high_scores_title">High Scores</string>
 	<string name="high_scores_empty">No high scores yet!</string>
 
+	<string name="main_back">Back</string>
 	<string name="main_new_game">New Game</string>
 	<string name="main_resume_game">Resume Game</string>
 	<string name="main_end_game">End Current Game</string>

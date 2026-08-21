@@ -12,7 +12,7 @@ import android.view.KeyEvent as AndroidKeyEvent
  * or D-pad Center. This modifier enables clicking with the Start button, or A/B buttons on a gamepad,
  * for user convenience.
  */
-fun Modifier.GamepadClickableButton(onClick: () -> Unit): Modifier =
+fun Modifier.gamepadClickableButton(onClick: () -> Unit): Modifier =
 	this.onKeyEvent { event: KeyEvent ->
 		if (
 			event.type == KeyEventType.KeyDown

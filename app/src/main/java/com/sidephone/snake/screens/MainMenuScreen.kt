@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.sidephone.snake.R
 import com.sidephone.snake.ui.theme.Dimens
-import com.sidephone.snake.util.GamepadClickableButton
 import com.sidephone.snake.util.MenuButton
+import com.sidephone.snake.util.gamepadClickableButton
 
 @Composable
 fun MainMenuScreen(
@@ -39,8 +39,8 @@ fun MainMenuScreen(
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState())
 			.padding(Dimens.MainMenuButtonContainerPadding),
+		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Top,
-		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		Text(
 			text = stringResource(R.string.app_name),
@@ -49,7 +49,8 @@ fun MainMenuScreen(
 			modifier = Modifier.padding(
 				top = Dimens.MainMenuTitlePaddingTop,
 				bottom = Dimens.MainMenuTitlePaddingBottom
-			)
+			),
+			color = MaterialTheme.colorScheme.onBackground
 		)
 
 		val buttonModifiers = Modifier
@@ -72,7 +73,7 @@ fun MainMenuScreen(
 						firstButtonFocusRequester.requestFocus()
 					}
 				}
-				.GamepadClickableButton(onNewGame)
+				.gamepadClickableButton(onNewGame)
 		) {
 			Text(stringResource(
 					if (isGamePaused) R.string.main_resume_game else R.string.main_new_game
@@ -82,7 +83,7 @@ fun MainMenuScreen(
 		if (isGamePaused) {
 			MenuButton(
 				onClick = onEndGame,
-				modifier = buttonModifiers.GamepadClickableButton(onEndGame)
+				modifier = buttonModifiers.gamepadClickableButton(onEndGame)
 			) {
 				Text(stringResource(R.string.main_end_game))
 			}
@@ -90,14 +91,14 @@ fun MainMenuScreen(
 
 		MenuButton(
 			onClick = onHighScores,
-			modifier = buttonModifiers.GamepadClickableButton(onHighScores)
+			modifier = buttonModifiers.gamepadClickableButton(onHighScores)
 		) {
 			Text(stringResource(R.string.main_high_scores))
 		}
 
 		MenuButton(
 			onClick = onExit,
-			modifier = buttonModifiers.GamepadClickableButton(onExit)
+			modifier = buttonModifiers.gamepadClickableButton(onExit)
 		) {
 			Text(stringResource(R.string.main_exit))
 		}
