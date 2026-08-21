@@ -1,52 +1,39 @@
 package com.sidephone.snake.engine.entities
 
+import com.sidephone.snake.engine.entities.food.Apple
+import com.sidephone.snake.engine.entities.food.Chicken
+import com.sidephone.snake.engine.entities.food.Egg
+import com.sidephone.snake.engine.entities.food.FoodTypeInterface
+import com.sidephone.snake.engine.entities.food.Pineapple
 import com.sidephone.snake.engine.graphics.DrawCommand
 
 class Food {
 	companion object {
-		const val COLOR: Int = 0xFF00FF00.toInt()
+		const val BASE_RADIUS = 15f
 	}
 
 	private var amount = 0f
-	private var radius = 0f
-	private var position: Pair<Float, Float> = Pair(0f, 0f)
+	private var x = 0f
+	private var y = 0f
+	private var foodType: FoodTypeInterface = Apple
 
+	private val foodTypes = listOf(Apple, Chicken, Egg, Pineapple)
 
 	fun amount(): Float { return amount }
+	fun destroy() { amount = 0f }
+	fun draw(): List<DrawCommand> { return foodType.draw(x, y) }
 	fun exists(): Boolean { return amount > 0f }
-	fun position(): Pair<Float, Float> { return position }
-	fun radius(): Float { return radius }
-
-
-	fun destroy() {
-		amount = 0f
-	}
+	fun position(): Pair<Float, Float> { return Pair(x, y) }
+	fun radius(): Float { return foodType.radius() }
 
 
 	fun spawn(screenWidth: Float, screenHeight: Float) {
-		amount = 0.5f + Math.random().toFloat() * 1.5f
-		radius = amount * Snake.SEGMENT_RADIUS
+		foodType = foodTypes.random()
+		amount = foodType.amount()
 
-		val maxX = (screenWidth - radius * 4f).coerceAtLeast(0f)
-		val maxY = (screenHeight - radius * 4f).coerceAtLeast(0f)
-		val x = radius * 2f + (Math.random().toFloat() * maxX)
-		val y = radius * 2f + (Math.random().toFloat() * maxY)
-
-		position = Pair(x, y)
-	}
-
-
-	fun draw(): List<DrawCommand> {
-		if (amount == 0f) return emptyList()
-
-		return listOf(
-			DrawCommand.Circle(
-				cx = position.first,
-				cy = position.second,
-				radius = amount * Snake.SEGMENT_RADIUS,
-				color = COLOR,
-				filled = true
-			)
-		)
+		val maxX = (screenWidth - foodType.radius() * 4f).coerceAtLeast(0f)
+		val maxY = (screenHeight - foodType.radius() * 4f).coerceAtLeast(0f)
+		x = foodType.radius() * 2f + (Math.random().toFloat() * maxX)
+		y = foodType.radius() * 2f + (Math.random().toFloat() * maxY)
 	}
 }

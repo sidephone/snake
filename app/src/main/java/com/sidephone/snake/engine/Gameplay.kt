@@ -9,7 +9,7 @@ import com.sidephone.snake.engine.entities.Food
 import com.sidephone.snake.engine.entities.Snake
 import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.engine.graphics.Ground
+import com.sidephone.snake.engine.entities.Ground
 import com.sidephone.snake.settings.GameplaySettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,9 @@ import kotlin.math.roundToInt
  * It is designed to be simple and easy to understand, so you can modify it to create your own game.
  */
 class Gameplay {
-	private val LOG_TAG = Gameplay::class.java.simpleName
+	companion object{
+		private val LOG_TAG = Gameplay::class.java.simpleName
+	}
 
 	// game loop
 	private var executor = Executors.newSingleThreadScheduledExecutor()
