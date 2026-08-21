@@ -25,7 +25,7 @@ fun ScoreOverlay(textColor: Color, gameplay: Gameplay) {
 		color = textColor,
 		textAlign = TextAlign.Center,
 		modifier = Modifier
-			.padding(2.dp)
+			.padding(5.dp)
 			.fillMaxWidth(),
 	)
 }

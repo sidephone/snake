@@ -31,6 +31,6 @@ class HighScores {
 
 
 	fun isHighScore(score: Int): Boolean {
-		return scores.isEmpty() || score > scores.first().second
+		return scores.isEmpty() || score > scores.last().second
 	}
 }
