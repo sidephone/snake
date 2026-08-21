@@ -26,7 +26,7 @@ object Apple : FoodTypeInterface {
 
 
 	override fun randomizeRadius() {
-		radius = Food.BASE_RADIUS * 0.9f + Math.random().toFloat() * 0.45f
+		radius = Food.BASE_RADIUS * 1.1f + Math.random().toFloat() * 0.45f
 	}
 
 

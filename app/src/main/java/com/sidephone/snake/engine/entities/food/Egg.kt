@@ -25,7 +25,7 @@ object Egg : FoodTypeInterface {
 
 
 	override fun randomizeRadius() {
-		radius = Food.BASE_RADIUS * 1.75f + Math.random().toFloat() * 0.75f
+		radius = Food.BASE_RADIUS * 1.85f + Math.random().toFloat() * 0.75f
 	}
 
 

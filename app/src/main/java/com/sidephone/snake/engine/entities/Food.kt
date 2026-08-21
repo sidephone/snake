@@ -1,10 +1,16 @@
 package com.sidephone.snake.engine.entities
 
 import com.sidephone.snake.engine.entities.food.Apple
+import com.sidephone.snake.engine.entities.food.Burger
+import com.sidephone.snake.engine.entities.food.Cake
 import com.sidephone.snake.engine.entities.food.Chicken
+import com.sidephone.snake.engine.entities.food.Pizza
 import com.sidephone.snake.engine.entities.food.Egg
+import com.sidephone.snake.engine.entities.food.Fish
 import com.sidephone.snake.engine.entities.food.FoodTypeInterface
+import com.sidephone.snake.engine.entities.food.Mushroom
 import com.sidephone.snake.engine.entities.food.Pineapple
+import com.sidephone.snake.engine.entities.food.Watermelon
 import com.sidephone.snake.engine.graphics.DrawCommand
 
 class Food {
@@ -17,7 +23,7 @@ class Food {
 	private var y = 0f
 	private var foodType: FoodTypeInterface = Apple
 
-	private val foodTypes = listOf(Apple, Chicken, Egg, Pineapple)
+	private val foodTypes = listOf(Apple, Burger, Cake, Chicken, Egg, Fish, Mushroom, Pineapple, Pizza, Watermelon)
 
 	fun amount(): Float { return amount }
 	fun destroy() { amount = 0f }

@@ -10,7 +10,7 @@ object Chicken : FoodTypeInterface {
 	const val BONE_COLOR: Int = 0xFFE8D2A5.toInt()
 	const val BONE_DARK: Int = 0xFFB99D72.toInt()
 
-	const val AMOUNT = 1.5f
+	const val AMOUNT = 1.8f
 
 	private var radius = Food.BASE_RADIUS
 
@@ -26,7 +26,7 @@ object Chicken : FoodTypeInterface {
 
 
 	override fun randomizeRadius() {
-		radius = Food.BASE_RADIUS * 1.2f + Math.random().toFloat() * 0.25f
+		radius = Food.BASE_RADIUS * 1.35f + Math.random().toFloat() * 0.25f
 	}
 
 

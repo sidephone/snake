@@ -25,7 +25,7 @@ object Pineapple : FoodTypeInterface {
 
 
 	override fun randomizeRadius() {
-		radius = Food.BASE_RADIUS * 1.3f + Math.random().toFloat() * 0.75f
+		radius = Food.BASE_RADIUS * 1.45f + Math.random().toFloat() * 0.75f
 	}
 
 
