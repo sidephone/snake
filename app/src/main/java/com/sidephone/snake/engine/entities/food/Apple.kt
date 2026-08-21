@@ -11,7 +11,8 @@ object Apple : FoodTypeInterface {
 	const val LEAF_COLOR: Int = 0xFF72C93D.toInt()
 
 	const val AMOUNT = 0.8f
-	private val RADIUS = Food.BASE_RADIUS * 0.9f + Math.random().toFloat() * 0.45f
+
+	private var radius = Food.BASE_RADIUS
 
 
 	override fun amount(): Float {
@@ -20,27 +21,32 @@ object Apple : FoodTypeInterface {
 
 
 	override fun radius(): Float {
-		return RADIUS
+		return radius
+	}
+
+
+	override fun randomizeRadius() {
+		radius = Food.BASE_RADIUS * 0.9f + Math.random().toFloat() * 0.45f
 	}
 
 
 	override fun draw(x: Float, y: Float): List<DrawCommand> {
-		val small = RADIUS * 0.25f
+		val small = radius * 0.25f
 
 		return listOf(
 			// Apple body.
 			DrawCommand.Circle(
-				cx = x - RADIUS * 0.28f,
-				cy = y + RADIUS * 0.05f,
-				radius = RADIUS * 0.72f,
+				cx = x - radius * 0.28f,
+				cy = y + radius * 0.05f,
+				radius = radius * 0.72f,
 				color = APPLE_COLOR,
 				filled = true
 			),
 
 			DrawCommand.Circle(
-				cx = x + RADIUS * 0.28f,
-				cy = y + RADIUS * 0.05f,
-				radius = RADIUS * 0.72f,
+				cx = x + radius * 0.28f,
+				cy = y + radius * 0.05f,
+				radius = radius * 0.72f,
 				color = APPLE_COLOR,
 				filled = true
 			),
@@ -48,7 +54,7 @@ object Apple : FoodTypeInterface {
 			// Indentation.
 			DrawCommand.Circle(
 				cx = x,
-				cy = y - RADIUS * 0.48f,
+				cy = y - radius * 0.48f,
 				radius = small,
 				color = APPLE_INDENT,
 				filled = true
@@ -57,26 +63,26 @@ object Apple : FoodTypeInterface {
 			// Stem.
 			DrawCommand.Line(
 				x1 = x,
-				y1 = y - RADIUS * 0.45f,
-				x2 = x + RADIUS * 0.08f,
-				y2 = y - RADIUS * 0.9f,
+				y1 = y - radius * 0.45f,
+				x2 = x + radius * 0.08f,
+				y2 = y - radius * 0.9f,
 				color = STEM_COLOR
 			),
 
 			// Leaf.
 			DrawCommand.Circle(
-				cx = x + RADIUS * 0.35f,
-				cy = y - RADIUS * 0.72f,
-				radius = RADIUS * 0.25f,
+				cx = x + radius * 0.35f,
+				cy = y - radius * 0.72f,
+				radius = radius * 0.25f,
 				color = LEAF_COLOR,
 				filled = true
 			),
 
 			// Highlight.
 			DrawCommand.Circle(
-				cx = x - RADIUS * 0.35f,
-				cy = y - RADIUS * 0.2f,
-				radius = RADIUS * 0.12f,
+				cx = x - radius * 0.35f,
+				cy = y - radius * 0.2f,
+				radius = radius * 0.12f,
 				color = APPLE_HIGHLIGHT,
 				filled = true
 			)

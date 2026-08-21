@@ -31,6 +31,7 @@ class Food {
 		foodType = foodTypes.random()
 		amount = foodType.amount()
 
+		foodType.randomizeRadius()
 		val radius = foodType.radius()
 
 		val maxX = (screenWidth - radius * 4f).coerceAtLeast(0f)

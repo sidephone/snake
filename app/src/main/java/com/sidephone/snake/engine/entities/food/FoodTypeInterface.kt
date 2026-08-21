@@ -6,4 +6,5 @@ interface FoodTypeInterface {
 	fun amount(): Float
 	fun draw(x: Float, y: Float): List<DrawCommand>
 	fun radius(): Float
+	fun randomizeRadius()
 }
