@@ -316,7 +316,7 @@ class Gameplay {
 			_isGameOver.value = true
 		}
 
-		if (snake.canEat(food)) {
+		if (snake.canEat(food) && food.exists(now)) {
 			snake.eat(food, now)
 			food.destroy()
 			_score.value = snake.segments() - Snake.INITIAL_LENGTH.roundToInt()

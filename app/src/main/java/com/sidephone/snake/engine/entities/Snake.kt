@@ -166,7 +166,7 @@ class Snake {
 
 
 	fun canEat(food: Food): Boolean {
-		val head = segments.firstOrNull() ?: Pair(0f, 0f)
+		val head = segments.firstOrNull() ?: return false
 		val foodPos = food.position()
 		val distanceX = head.first - foodPos.first
 		val distanceY = head.second - foodPos.second
