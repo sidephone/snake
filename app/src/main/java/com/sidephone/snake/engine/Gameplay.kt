@@ -295,9 +295,12 @@ class Gameplay {
 	 */
 	@WorkerThread
 	private fun render() {
+		val now = System.currentTimeMillis()
 		var isSceneChanged: Boolean
 
 		snake.move()
+		snake.toggleTongueRandomly(now, pressedKeys.isNotEmpty())
+
 		if (snake.isAlive(viewportWidth, viewportHeight)) {
 			isSceneChanged = true
 		} else {
@@ -334,7 +337,7 @@ class Gameplay {
 		}
 
 		val drawCommands = mutableListOf<DrawCommand>()
-		drawCommands.addAll(snake.draw())
+		drawCommands.addAll(snake.draw(now))
 		drawCommands.addAll(food.draw())
 		currentFrame = GameFrame(Ground.BACKGROUND, drawCommands)
 	}

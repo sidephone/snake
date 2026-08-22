@@ -22,6 +22,10 @@ class Snake {
 		object Tongue {
 			const val LENGTH = Segment.RADIUS * 0.8f
 			const val FORK_LENGTH = Segment.RADIUS * 0.25f
+			const val STICK_OUT_BASE_TIME = 500L // milliseconds
+
+			const val STICK_OUT_FORCED_PROBABILITY = 0.3 // 30% chance
+			const val STICK_OUT_NATURALLY_PROBABILITY = 0.15 // 15% chance
 		}
 
 		object Colors {
@@ -37,7 +41,8 @@ class Snake {
 	private var segments = mutableListOf<Pair<Float, Float>>() // List of (x, y) positions of the snake segments
 	private var length = INITIAL_LENGTH
 	private var isAlive = true
-	private var isTongueOut = false
+
+	private var tongueTimeout = -1L
 
 
 	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
@@ -119,27 +124,36 @@ class Snake {
 		if (segments.size > currentLength) {
 			segments.removeAt(segments.size - 1)
 		}
-
-		// randomly toggle the tongue state
-		if (isTongueOut && Math.random() < 0.5) {
-			isTongueOut = false
-		} else if (!isTongueOut && Math.random() < 0.1) {
-			isTongueOut = true
-		}
 	}
 
 
 	fun turn(direction: Direction) {
-		if (this.direction != direction && !isTongueOut) {
-			isTongueOut = Math.random() < 0.6 // Randomly toggle the tongue state when turning
-		}
-
 		when (this.direction) {
 			Direction.UP -> if (direction != Direction.DOWN) this.direction = direction
 			Direction.DOWN -> if (direction != Direction.UP) this.direction = direction
 			Direction.LEFT -> if (direction != Direction.RIGHT) this.direction = direction
 			Direction.RIGHT -> if (direction != Direction.LEFT) this.direction = direction
 		}
+	}
+
+
+	fun toggleTongueRandomly(now: Long, isTurning: Boolean) {
+		if (isTongueOut(now)) {
+			return
+		}
+
+		val randomNumber = Math.random()
+		if (
+			(isTurning && randomNumber < Tongue.STICK_OUT_FORCED_PROBABILITY)
+			|| (!isTurning && randomNumber < Tongue.STICK_OUT_NATURALLY_PROBABILITY)
+		) {
+			tongueTimeout = now + (randomNumber * Tongue.STICK_OUT_BASE_TIME).toLong()
+		}
+	}
+
+
+	fun isTongueOut(now: Long): Boolean {
+		return tongueTimeout - now > 0
 	}
 
 
@@ -176,8 +190,8 @@ class Snake {
 	}
 
 
-	fun draw(): List<DrawCommand> {
-		return drawBody() + drawTongue()
+	fun draw(now: Long): List<DrawCommand> {
+		return drawBody() + drawTongue(now)
 	}
 
 
@@ -202,8 +216,8 @@ class Snake {
 	}
 
 
-	private fun drawTongue(): List<DrawCommand> {
-		if (!isTongueOut) {
+	private fun drawTongue(now: Long): List<DrawCommand> {
+		if (!isTongueOut(now)) {
 			return emptyList()
 		}
 
