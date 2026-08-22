@@ -26,26 +26,34 @@ object Poop : FoodTypeInterface {
 
 
 	override fun randomizeRadius() {
-		radius = Food.BASE_RADIUS * 1.35f + Math.random().toFloat() * 0.25f
+		radius = Food.BASE_RADIUS * 1.6f + Math.random().toFloat() * 0.25f
 	}
 
 
 	override fun draw(x: Float, y: Float): List<DrawCommand> {
 		return listOf(
 			// Base.
-			DrawCommand.Circle(
-				cx = x,
-				cy = y + radius * 0.3f,
-				radius = radius * 0.62f,
+			DrawCommand.Rect(
+				left = x - radius * 0.5f,
+				top = y + radius * 0.05f,
+				right = x + radius * 0.5f,
+				bottom = y + radius * 0.48f,
 				color = POOP_DARK,
 				filled = true
 			),
 
-			DrawCommand.Rect(
-				left = x - radius * 0.58f,
-				top = y + radius * 0.05f,
-				right = x + radius * 0.58f,
-				bottom = y + radius * 0.42f,
+			DrawCommand.Circle(
+				cx = x - radius * 0.5f,
+				cy = y + radius * 0.27f,
+				radius = radius * 0.25f,
+				color = POOP_DARK,
+				filled = true
+			),
+
+			DrawCommand.Circle(
+				cx = x + radius * 0.5f,
+				cy = y + radius * 0.27f,
+				radius = radius * 0.25f,
 				color = POOP_DARK,
 				filled = true
 			),
