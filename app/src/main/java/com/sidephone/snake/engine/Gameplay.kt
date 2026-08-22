@@ -314,7 +314,10 @@ class Gameplay {
 
 		if (!food.exists()) {
 			food.spawn(viewportWidth, viewportHeight)
-			if (snake.isShort() && food.amount() < 0f) {
+
+			// not a strict requirement, but it makes the game more fun if the player has a higher chance
+			// of get special food only after reaching a certain length
+			if (snake.segments() < GameplaySettings.MIN_SNAKE_LENGTH_FOR_SPECIAL_FOOD && food.amount() < 0f) {
 				food.spawn(viewportWidth, viewportHeight)
 			}
 

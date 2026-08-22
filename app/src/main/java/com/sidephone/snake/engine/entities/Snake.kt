@@ -12,7 +12,6 @@ class Snake {
 		private val LOG_TAG = Snake::class.java.simpleName
 
 		const val INITIAL_LENGTH = 3.5
-		const val LONG_LENGTH = 80.0
 		const val MOVE_SPEED = Segment.RADIUS * 2 // px per iteration
 
 		object Segment {
@@ -56,11 +55,6 @@ class Snake {
 		}
 
 		return isAlive
-	}
-
-
-	fun isShort(): Boolean {
-		return length < LONG_LENGTH
 	}
 
 
