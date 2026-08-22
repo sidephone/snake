@@ -232,7 +232,8 @@ class Snake {
 			return emptyList()
 		}
 
-		val (x, y) = segments[0]
+		val head = segments.firstOrNull() ?: return emptyList()
+		val (x, y) = head
 		val length = if (isTongueLong) Tongue.LENGTH_LONG else Tongue.LENGTH_NORMAL
 
 		val drawCommands = mutableListOf<DrawCommand>()
