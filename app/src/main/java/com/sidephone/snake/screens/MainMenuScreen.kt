@@ -30,6 +30,7 @@ fun MainMenuScreen(
 	onNewGame: () -> Unit,
 	onEndGame: () -> Unit,
 	onHighScores: () -> Unit,
+	onSettings: () -> Unit,
 	onExit: () -> Unit
 ) {
 	val firstButtonFocusRequester = remember { FocusRequester() }
@@ -94,6 +95,15 @@ fun MainMenuScreen(
 			modifier = buttonModifiers.gamepadClickableButton(onHighScores)
 		) {
 			Text(stringResource(R.string.main_high_scores))
+		}
+
+		if (!isGamePaused) {
+			MenuButton(
+				onClick = onSettings,
+				modifier = buttonModifiers.gamepadClickableButton(onSettings)
+			) {
+				Text(stringResource(R.string.main_settings))
+			}
 		}
 
 		MenuButton(

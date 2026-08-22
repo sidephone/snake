@@ -9,7 +9,7 @@ import android.view.SurfaceView
 import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.settings.GameplaySettings
+import com.sidephone.snake.settings.Settings
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -19,7 +19,9 @@ import java.util.concurrent.TimeUnit
  * the screen.Runs on a separate thread to avoid blocking other game logic.
  */
 class GameSurfaceView(context: Context, private var gameplay: Gameplay, private val menuBackground: Int) : SurfaceView(context), SurfaceHolder.Callback {
-	private val LOG_TAG = GameSurfaceView::class.java.simpleName
+	companion object {
+		private val LOG_TAG = GameSurfaceView::class.java.simpleName
+	}
 
 	private var executor = Executors.newSingleThreadScheduledExecutor()
 	private var renderFuture: ScheduledFuture<*>? = null
@@ -61,10 +63,10 @@ class GameSurfaceView(context: Context, private var gameplay: Gameplay, private 
 		val exec = Executors.newSingleThreadScheduledExecutor()
 		executor = exec
 		renderFuture = exec.scheduleWithFixedDelay(
-			{ render(holder) }, 0, 1_000_000_000L / GameplaySettings.TARGET_FPS, TimeUnit.NANOSECONDS
+			{ render(holder) }, 0, 1_000_000_000L / Settings.Gameplay.TARGET_FPS, TimeUnit.NANOSECONDS
 		)
 
-		Log.d(LOG_TAG, "Rendering loop started at ${GameplaySettings.TARGET_FPS} FPS")
+		Log.d(LOG_TAG, "Rendering loop started at ${Settings.Gameplay.TARGET_FPS} FPS")
 	}
 
 

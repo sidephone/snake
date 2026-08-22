@@ -19,28 +19,30 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.engine.HighScores
-import com.sidephone.snake.screens.HighScoresScreen
+import com.sidephone.snake.screens.highscores.HighScoresScreen
 import com.sidephone.snake.screens.MainMenuScreen
 import com.sidephone.snake.screens.RecordHighScoreScreen
 import com.sidephone.snake.screens.ScreenType
+import com.sidephone.snake.screens.settings.SettingsScreen
 import com.sidephone.snake.screens.game.GameScreen
-import com.sidephone.snake.settings.SettingsStore
+import com.sidephone.snake.settings.Settings
 import com.sidephone.snake.ui.theme.SidesnakeTheme
 
 class MainActivity : ComponentActivity() {
-	private var gamepad = Gamepad()
-	private var gameplay = Gameplay()
+	private val gamepad = Gamepad()
+	private var gameplay = Gameplay(null)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		val settings = Settings(this)
+		gameplay = Gameplay(settings)
 
 		enableEdgeToEdge()
 		switchToFullScreen()
 
 		setContent {
 			SidesnakeTheme {
-				val settings = SettingsStore(this)
-
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var recordHighScore by remember { mutableStateOf<Int?>(null) }
@@ -68,6 +70,7 @@ class MainActivity : ComponentActivity() {
 							isGamePaused = isGamePaused,
 							onExit = { finish() },
 							onHighScores = { currentScreen = ScreenType.HighScores },
+							onSettings = { currentScreen = ScreenType.Settings },
 							onEndGame = {
 								gameplay.stop()
 								isGamePaused = gameplay.isPaused()
@@ -92,6 +95,7 @@ class MainActivity : ComponentActivity() {
 									.start()
 								},
 						)
+						ScreenType.Settings -> { SettingsScreen(settings, onBack = { currentScreen = ScreenType.Menu }) }
 						ScreenType.HighScores -> { HighScoresScreen(highScores, onBack = { currentScreen = ScreenType.Menu }) }
 						ScreenType.RecordHighScore -> RecordHighScoreScreen(
 							newScore = recordHighScore ?: 0,
