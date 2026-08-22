@@ -239,15 +239,19 @@ class Gameplay {
 	 */
 	@WorkerThread
 	private fun advance() {
-		// process input on every iteration to ensure responsiveness
-		processInput()
+		try {
+			// process input on every iteration to ensure responsiveness
+			processInput()
 
-		// the standard movement speed is too fast to be playable, so we skip rendering some frames,
-		// to reduce the perceived game speed
-		iteration++
-		val speedFactor = (100f / GameplaySettings.GAME_SPEED).roundToInt().coerceAtLeast(1)
-		if (iteration % speedFactor == 0) {
-			render()
+			// the standard movement speed is too fast to be playable, so we skip rendering some frames,
+			// to reduce the perceived game speed
+			iteration++
+			val speedFactor = (100f / GameplaySettings.GAME_SPEED).roundToInt().coerceAtLeast(1)
+			if (iteration % speedFactor == 0) {
+				render()
+			}
+		} catch (e: Exception) {
+			Log.e(LOG_TAG, "Failed advancing ahead gameplay. ${e.message}", e)
 		}
 	}
 
