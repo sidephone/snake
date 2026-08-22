@@ -2,7 +2,7 @@ package com.sidephone.snake.engine.entities
 
 import com.sidephone.snake.engine.entities.food.Apple
 import com.sidephone.snake.engine.entities.food.Burger
-import com.sidephone.snake.engine.entities.food.Cake
+import com.sidephone.snake.engine.entities.food.IceCream
 import com.sidephone.snake.engine.entities.food.Chicken
 import com.sidephone.snake.engine.entities.food.Egg
 import com.sidephone.snake.engine.entities.food.Fish
@@ -19,7 +19,7 @@ class Food {
 		const val BASE_RADIUS = 15f
 	}
 
-	private val foodTypes = listOf(Apple, Burger, Cake, Chicken, Egg, Fish, Mushroom, Pineapple, Pizza, Poop, Watermelon)
+	private val foodTypes = listOf(Apple, Burger, Chicken, Egg, Fish, IceCream, Mushroom, Pineapple, Pizza, Poop, Watermelon)
 
 	private var amount = 0f
 	private var foodType: FoodTypeInterface = Apple
