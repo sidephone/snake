@@ -142,12 +142,13 @@ class Snake {
 			return
 		}
 
-		val randomNumber = Math.random()
+		val chance = Math.random()
 		if (
-			(isTurning && randomNumber < Tongue.STICK_OUT_FORCED_PROBABILITY)
-			|| (!isTurning && randomNumber < Tongue.STICK_OUT_NATURALLY_PROBABILITY)
+			(isTurning && chance < Tongue.STICK_OUT_FORCED_PROBABILITY)
+			|| (!isTurning && chance < Tongue.STICK_OUT_NATURALLY_PROBABILITY)
 		) {
-			tongueTimeout = now + (randomNumber * Tongue.STICK_OUT_BASE_TIME).toLong()
+			val duration = (Math.random() * Tongue.STICK_OUT_BASE_TIME).toLong().coerceAtLeast(1L)
+			tongueTimeout = now + duration
 		}
 	}
 
