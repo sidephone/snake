@@ -6,10 +6,10 @@ import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.sidephone.snake.engine.entities.Food
+import com.sidephone.snake.engine.entities.Ground
 import com.sidephone.snake.engine.entities.Snake
 import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.engine.entities.Ground
 import com.sidephone.snake.settings.GameplaySettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -295,6 +295,10 @@ class Gameplay {
 	 */
 	@WorkerThread
 	private fun render() {
+		if (isGameOver.value) {
+			return
+		}
+
 		val now = System.currentTimeMillis()
 		var isSceneChanged: Boolean
 
@@ -315,15 +319,8 @@ class Gameplay {
 			isSceneChanged = true
 		}
 
-		if (!food.exists()) {
-			food.spawn(viewportWidth, viewportHeight)
-
-			// not a strict requirement, but it makes the game more fun if the player has a higher chance
-			// of get special food only after reaching a certain length
-			if (snake.segments() < GameplaySettings.MIN_SNAKE_LENGTH_FOR_SPECIAL_FOOD && food.amount() < 0f) {
-				food.spawn(viewportWidth, viewportHeight)
-			}
-
+		if (!food.exists(now)) {
+			food.spawn(viewportWidth, viewportHeight, now, GameplaySettings.FOOD_STAYS_UNTIL_EATEN)
 			isSceneChanged = true
 		}
 
