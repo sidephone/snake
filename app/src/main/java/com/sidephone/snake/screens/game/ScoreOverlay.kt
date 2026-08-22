@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sidephone.snake.R
 import com.sidephone.snake.engine.Gameplay
+import com.sidephone.snake.ui.theme.Dimens
 
 @Composable
 fun ScoreOverlay(textColor: Color, gameplay: Gameplay) {
@@ -25,7 +26,7 @@ fun ScoreOverlay(textColor: Color, gameplay: Gameplay) {
 		color = textColor,
 		textAlign = TextAlign.Center,
 		modifier = Modifier
-			.padding(5.dp)
+			.padding(top = Dimens.HudPadding)
 			.fillMaxWidth(),
 	)
 }
