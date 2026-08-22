@@ -24,6 +24,7 @@ class Snake {
 			const val LENGTH_LONG = LENGTH_NORMAL * 3
 			const val FORK_LENGTH = Segment.RADIUS * 0.25f
 			const val STICK_OUT_BASE_TIME = 500L // milliseconds
+			const val STICK_OUT_LONG_TIME = (STICK_OUT_BASE_TIME * 1.55).toLong() // milliseconds
 
 			const val STICK_OUT_FORCED_PROBABILITY = 0.3 // 30% chance
 			const val STICK_OUT_NATURALLY_PROBABILITY = 0.15 // 15% chance
@@ -106,18 +107,19 @@ class Snake {
 	}
 
 	fun move() {
-		if (segments.isEmpty() || !isAlive || isTongueLong) {
+		if (segments.isEmpty() || !isAlive) {
 			return
 		}
 
 		val currentLength = segments.size
 		val head = segments.first()
+		val speed = if (isTongueLong) MOVE_SPEED * 0.5f else MOVE_SPEED
 
 		val newHead = when (direction) {
-			Direction.UP -> Pair(head.first, head.second - MOVE_SPEED)
-			Direction.DOWN -> Pair(head.first, head.second + MOVE_SPEED)
-			Direction.LEFT -> Pair(head.first - MOVE_SPEED, head.second)
-			Direction.RIGHT -> Pair(head.first + MOVE_SPEED, head.second)
+			Direction.UP -> Pair(head.first, head.second - speed)
+			Direction.DOWN -> Pair(head.first, head.second + speed)
+			Direction.LEFT -> Pair(head.first - speed, head.second)
+			Direction.RIGHT -> Pair(head.first + speed, head.second)
 		}
 
 		// Add the new head position to the front of the list
@@ -175,7 +177,7 @@ class Snake {
 
 
 	fun eat(food: Food, now: Long) {
-		length += food.amount()
+		length = (length + food.amount()).coerceAtLeast(0.0)
 
 		val newSegmentCount = ceil(length)
 
@@ -192,7 +194,7 @@ class Snake {
 			}
 
 			isTongueLong = true
-			tongueTimeout = now + Tongue.STICK_OUT_BASE_TIME
+			tongueTimeout = now + Tongue.STICK_OUT_LONG_TIME
 		}
 
 		Log.d(LOG_TAG, "Snake ate ${food.amount()}. New length: $length, segments: ${segments.size}")
