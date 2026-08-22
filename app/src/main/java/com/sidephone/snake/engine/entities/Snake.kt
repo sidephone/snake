@@ -162,12 +162,17 @@ class Snake {
 
 	fun eat(food: Food) {
 		length += food.amount()
+
 		val newSegmentCount = ceil(length)
-		if (newSegmentCount > segments.size) {
+
+		if (newSegmentCount <= 0) {
+			segments.clear()
+			isAlive = false
+		} else if (segments.size < newSegmentCount) {
 			while (segments.size < newSegmentCount) {
 				segments.add(segments.last())
 			}
-		} else if (newSegmentCount < segments.size) {
+		} else if (segments.size > newSegmentCount) {
 			while (segments.size > newSegmentCount) {
 				segments.removeAt(segments.size - 1)
 			}
