@@ -16,6 +16,7 @@ class Snake {
 
 		object Segment {
 			const val RADIUS = 10f
+			const val RADIUS_HEAD = RADIUS * 1.1f
 			const val RADIUS_MIN = RADIUS * 0.4f
 		}
 
@@ -210,7 +211,7 @@ class Snake {
 		val drawCommands = mutableListOf<DrawCommand>()
 
 		for (i in segments.size - 1 downTo 0) {
-			var radius = Segment.RADIUS
+			var radius = if (i == 0) Segment.RADIUS_HEAD else Segment.RADIUS
 			if (i == segments.size - 1) {
 				val lengthExp = floor(length)
 				val radiusMultiplier = if (lengthExp == length) 1 else (length - lengthExp)
