@@ -46,6 +46,8 @@ class Gamepad {
 			KeyEvent.KEYCODE_4,
 			KeyEvent.KEYCODE_6,
 			KeyEvent.KEYCODE_8,
+			KeyEvent.KEYCODE_DPAD_CENTER,
+			KeyEvent.KEYCODE_ENTER,
 			// sundial
 			KeyEvent.KEYCODE_MEDIA_NEXT,
 			KeyEvent.KEYCODE_MEDIA_PREVIOUS,
@@ -71,7 +73,7 @@ class Gamepad {
 	 */
 	private fun normalizeKeyCode(keyCode: Int): Int {
 		return when (keyCode) {
-			KeyEvent.KEYCODE_MEDIA_PAUSE -> KeyEvent.KEYCODE_BUTTON_START
+			KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> KeyEvent.KEYCODE_BUTTON_START
 			KeyEvent.KEYCODE_MEDIA_NEXT, KeyEvent.KEYCODE_6 -> KeyEvent.KEYCODE_DPAD_RIGHT
 			KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_4 -> KeyEvent.KEYCODE_DPAD_LEFT
 			KeyEvent.KEYCODE_2 -> KeyEvent.KEYCODE_DPAD_UP

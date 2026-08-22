@@ -19,8 +19,8 @@ fun Modifier.gamepadClickableButton(onClick: () -> Unit): Modifier =
 			&& (
 				// add or remove key codes here, to define which buttons can trigger the click event
 				event.nativeKeyEvent.keyCode == AndroidKeyEvent.KEYCODE_BUTTON_START
+				|| event.nativeKeyEvent.keyCode == AndroidKeyEvent.KEYCODE_DPAD_CENTER
 				|| event.nativeKeyEvent.keyCode == AndroidKeyEvent.KEYCODE_BUTTON_A
-				|| event.nativeKeyEvent.keyCode == AndroidKeyEvent.KEYCODE_BUTTON_B
 			)
 		) {
 			onClick()
