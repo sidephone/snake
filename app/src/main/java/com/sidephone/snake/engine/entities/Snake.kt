@@ -20,7 +20,8 @@ class Snake {
 		}
 
 		object Tongue {
-			const val LENGTH = Segment.RADIUS * 0.8f
+			const val LENGTH_NORMAL = Segment.RADIUS * 0.8f
+			const val LENGTH_LONG = LENGTH_NORMAL * 3
 			const val FORK_LENGTH = Segment.RADIUS * 0.25f
 			const val STICK_OUT_BASE_TIME = 500L // milliseconds
 
@@ -43,6 +44,7 @@ class Snake {
 	private var isAlive = true
 
 	private var tongueTimeout = -1L
+	private var isTongueLong = false
 
 
 	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
@@ -104,12 +106,13 @@ class Snake {
 	}
 
 	fun move() {
-		if (segments.isEmpty() || !isAlive) {
+		if (segments.isEmpty() || !isAlive || isTongueLong) {
 			return
 		}
 
 		val currentLength = segments.size
 		val head = segments.first()
+
 		val newHead = when (direction) {
 			Direction.UP -> Pair(head.first, head.second - MOVE_SPEED)
 			Direction.DOWN -> Pair(head.first, head.second + MOVE_SPEED)
@@ -142,6 +145,8 @@ class Snake {
 			return
 		}
 
+		isTongueLong = false
+
 		val chance = Math.random()
 		if (
 			(isTurning && chance < Tongue.STICK_OUT_FORCED_PROBABILITY)
@@ -169,7 +174,7 @@ class Snake {
 	}
 
 
-	fun eat(food: Food) {
+	fun eat(food: Food, now: Long) {
 		length += food.amount()
 
 		val newSegmentCount = ceil(length)
@@ -185,6 +190,9 @@ class Snake {
 			while (segments.size > newSegmentCount) {
 				segments.removeAt(segments.size - 1)
 			}
+
+			isTongueLong = true
+			tongueTimeout = now + Tongue.STICK_OUT_BASE_TIME
 		}
 
 		Log.d(LOG_TAG, "Snake ate ${food.amount()}. New length: $length, segments: ${segments.size}")
@@ -217,18 +225,19 @@ class Snake {
 	}
 
 
-	private fun drawTongue(now: Long): List<DrawCommand> {
+	fun drawTongue(now: Long): List<DrawCommand> {
 		if (!isTongueOut(now)) {
 			return emptyList()
 		}
 
 		val (x, y) = segments[0]
+		val length = if (isTongueLong) Tongue.LENGTH_LONG else Tongue.LENGTH_NORMAL
 
 		val drawCommands = mutableListOf<DrawCommand>()
 
 		when (direction) {
 			Direction.UP -> {
-				val tipY = y - Segment.RADIUS - Tongue.LENGTH
+				val tipY = y - Segment.RADIUS - length
 
 				drawCommands.add(
 					DrawCommand.Line(
@@ -256,7 +265,7 @@ class Snake {
 			}
 
 			Direction.DOWN -> {
-				val tipY = y + Segment.RADIUS + Tongue.LENGTH
+				val tipY = y + Segment.RADIUS + length
 
 				drawCommands.add(
 					DrawCommand.Line(
@@ -284,7 +293,7 @@ class Snake {
 			}
 
 			Direction.LEFT -> {
-				val tipX = x - Segment.RADIUS - Tongue.LENGTH
+				val tipX = x - Segment.RADIUS - length
 
 				drawCommands.add(
 					DrawCommand.Line(
@@ -312,7 +321,7 @@ class Snake {
 			}
 
 			Direction.RIGHT -> {
-				val tipX = x + Segment.RADIUS + Tongue.LENGTH
+				val tipX = x + Segment.RADIUS + length
 
 				drawCommands.add(
 					DrawCommand.Line(
