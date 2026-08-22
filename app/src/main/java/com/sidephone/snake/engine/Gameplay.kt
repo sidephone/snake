@@ -10,7 +10,7 @@ import com.sidephone.snake.engine.entities.Ground
 import com.sidephone.snake.engine.entities.Snake
 import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.settings.GameplaySettings
+import com.sidephone.snake.settings.Settings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.Executors
@@ -22,12 +22,14 @@ import kotlin.math.roundToInt
  * The main game engine class. It contains the game loop, input handling, and game state management.
  * It is designed to be simple and easy to understand, so you can modify it to create your own game.
  */
-class Gameplay {
+class Gameplay(private val settings: Settings?) {
 	companion object {
 		private val LOG_TAG = Gameplay::class.java.simpleName
 	}
 
 	// game loop
+	private var gameSpeed = 100
+	private var foodStaysUntilEaten = true
 	private var executor = Executors.newSingleThreadScheduledExecutor()
 	private var engineLooper: Future<*>? = null
 	@Volatile private var isPaused = false
@@ -73,13 +75,17 @@ class Gameplay {
 			}
 		}
 
-		pressedKeys = setOf()
-		_isGameOver.value = false
-		iteration = 0
-		snake.spawn(viewportWidth, viewportHeight)
-		food.destroy()
-		_score.value = 0
 		currentFrame = GameFrame(Ground.BACKGROUND, emptyList())
+		pressedKeys = setOf()
+
+		gameSpeed = settings?.gameSpeed() ?: gameSpeed
+		iteration = 0
+		_isGameOver.value = false
+		_score.value = 0
+
+		food.destroy()
+		foodStaysUntilEaten = settings?.foodStaysUntilEaten() ?: foodStaysUntilEaten
+		snake.spawn(viewportWidth, viewportHeight)
 	}
 
 
@@ -130,13 +136,13 @@ class Gameplay {
 		engineLooper = executor.scheduleWithFixedDelay(
 			{ advance() },
 			0,
-			1000L / GameplaySettings.TARGET_IPS,
+			1000L / Settings.Gameplay.TARGET_IPS,
 			java.util.concurrent.TimeUnit.MILLISECONDS
 		)
 
 		onStarted()
 
-		Log.d(LOG_TAG, "Gameplay loop started at ${GameplaySettings.TARGET_IPS} iterations per second")
+		Log.d(LOG_TAG, "Gameplay loop started at ${Settings.Gameplay.TARGET_IPS} iterations per second")
 	}
 
 
@@ -246,7 +252,7 @@ class Gameplay {
 			// the standard movement speed is too fast to be playable, so we skip rendering some frames,
 			// to reduce the perceived game speed
 			iteration++
-			val speedFactor = (100f / GameplaySettings.GAME_SPEED).roundToInt().coerceAtLeast(1)
+			val speedFactor = (100f / gameSpeed).roundToInt().coerceAtLeast(1)
 			if (iteration % speedFactor == 0) {
 				render()
 			}
@@ -324,7 +330,7 @@ class Gameplay {
 		}
 
 		if (!food.exists(now)) {
-			food.spawn(viewportWidth, viewportHeight, now, GameplaySettings.FOOD_STAYS_UNTIL_EATEN)
+			food.spawn(viewportWidth, viewportHeight, now, foodStaysUntilEaten)
 			isSceneChanged = true
 		}
 

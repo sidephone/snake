@@ -1,9 +1,8 @@
-package com.sidephone.snake.screens
+package com.sidephone.snake.screens.highscores
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,8 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.sidephone.snake.R
 import com.sidephone.snake.engine.HighScores
 import com.sidephone.snake.ui.theme.Dimens
-import com.sidephone.snake.util.MenuButton
-import com.sidephone.snake.util.gamepadClickableButton
+import com.sidephone.snake.util.BackToMainButton
 
 @Composable
 fun HighScoresScreen(scores: HighScores, onBack: () -> Unit) {
@@ -40,34 +38,7 @@ fun HighScoresScreen(scores: HighScores, onBack: () -> Unit) {
 			color = colorScheme.onBackground
 		)
 
-		if (scores.isEmpty()) {
-			Text(
-				text = stringResource(R.string.high_scores_empty),
-				style = typography.bodyMedium,
-				color = colorScheme.onBackground
-			)
-		} else {
-			scores.getAll().forEachIndexed { index, (name, score) ->
-				Text(
-					text = "${index + 1}. $name – $score",
-					style = typography.bodyMedium,
-					color = colorScheme.onBackground
-				)
-			}
-		}
-
-		MenuButton(
-			onClick = onBack,
-			modifier = Modifier.fillMaxWidth()
-			.padding(
-				top = Dimens.MainMenuTitlePaddingBottom,
-				bottom = Dimens.MainMenuButtonPaddingBottom,
-				start = Dimens.MainMenuButtonPaddingHorizontal,
-				end = Dimens.MainMenuButtonPaddingHorizontal
-			)
-			.gamepadClickableButton(onBack)
-		) {
-			Text(stringResource(R.string.main_back))
-		}
+		HighScoresTable(scores)
+		BackToMainButton(onBack)
 	}
 }
