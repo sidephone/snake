@@ -1,0 +1,100 @@
+package com.sidephone.snake.engine.entities.food
+
+import com.sidephone.snake.engine.entities.Food
+import com.sidephone.snake.engine.graphics.DrawCommand
+
+object Chicken : FoodTypeInterface {
+	const val CHICKEN_COLOR: Int = 0xFFC97832.toInt()
+	const val CHICKEN_DARK: Int = 0xFF9A4E27.toInt()
+	const val CHICKEN_HIGHLIGHT: Int = 0xFFE59A4B.toInt()
+	const val BONE_COLOR: Int = 0xFFE8D2A5.toInt()
+	const val BONE_DARK: Int = 0xFFB99D72.toInt()
+
+	const val AMOUNT = 1.8f
+
+	private var radius = Food.BASE_RADIUS
+
+
+	override fun amount(): Float {
+		return AMOUNT
+	}
+
+
+	override fun radius(): Float {
+		return radius
+	}
+
+
+	override fun randomizeRadius() {
+		radius = Food.BASE_RADIUS * 1.35f + Math.random().toFloat() * 0.25f
+	}
+
+
+	override fun draw(x: Float, y: Float): List<DrawCommand> {
+		return listOf(
+			// Main meaty part.
+			DrawCommand.Circle(
+				cx = x,
+				cy = y - radius * 0.05f,
+				radius = radius * 0.62f,
+				color = CHICKEN_DARK,
+				filled = true
+			),
+
+			// Golden inner meat.
+			DrawCommand.Circle(
+				cx = x - radius * 0.05f,
+				cy = y - radius * 0.1f,
+				radius = radius * 0.52f,
+				color = CHICKEN_COLOR,
+				filled = true
+			),
+
+			// Rounded upper part.
+			DrawCommand.Circle(
+				cx = x + radius * 0.3f,
+				cy = y - radius * 0.25f,
+				radius = radius * 0.35f,
+				color = CHICKEN_COLOR,
+				filled = true
+			),
+
+			// Highlight.
+			DrawCommand.Circle(
+				cx = x - radius * 0.2f,
+				cy = y - radius * 0.3f,
+				radius = radius * 0.12f,
+				color = CHICKEN_HIGHLIGHT,
+				filled = true
+			),
+
+			// Bone.
+			DrawCommand.Line(
+				x1 = x - radius * 0.1f,
+				y1 = y + radius * 0.35f,
+				x2 = x - radius * 0.1f,
+				y2 = y + radius * 0.9f,
+				color = BONE_COLOR
+			),
+
+			// Bone end.
+			DrawCommand.Circle(
+				cx = x - radius * 0.1f,
+				cy = y + radius * 0.9f,
+				radius = radius * 0.18f,
+				color = BONE_COLOR,
+				filled = true
+			),
+
+			// Small darker bone tip.
+			DrawCommand.Circle(
+				cx = x - radius * 0.1f,
+				cy = y + radius * 1.0f,
+				radius = radius * 0.08f,
+				color = BONE_DARK,
+				filled = true
+			)
+		)
+	}
+
+}

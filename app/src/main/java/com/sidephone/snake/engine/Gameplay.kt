@@ -9,7 +9,7 @@ import com.sidephone.snake.engine.entities.Food
 import com.sidephone.snake.engine.entities.Snake
 import com.sidephone.snake.engine.graphics.DrawCommand
 import com.sidephone.snake.engine.graphics.GameFrame
-import com.sidephone.snake.engine.graphics.Ground
+import com.sidephone.snake.engine.entities.Ground
 import com.sidephone.snake.settings.GameplaySettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,9 @@ import kotlin.math.roundToInt
  * It is designed to be simple and easy to understand, so you can modify it to create your own game.
  */
 class Gameplay {
-	private val LOG_TAG = Gameplay::class.java.simpleName
+	companion object {
+		private val LOG_TAG = Gameplay::class.java.simpleName
+	}
 
 	// game loop
 	private var executor = Executors.newSingleThreadScheduledExecutor()
@@ -293,9 +295,12 @@ class Gameplay {
 	 */
 	@WorkerThread
 	private fun render() {
+		val now = System.currentTimeMillis()
 		var isSceneChanged: Boolean
 
 		snake.move()
+		snake.toggleTongueRandomly(now, pressedKeys.isNotEmpty())
+
 		if (snake.isAlive(viewportWidth, viewportHeight)) {
 			isSceneChanged = true
 		} else {
@@ -312,6 +317,13 @@ class Gameplay {
 
 		if (!food.exists()) {
 			food.spawn(viewportWidth, viewportHeight)
+
+			// not a strict requirement, but it makes the game more fun if the player has a higher chance
+			// of get special food only after reaching a certain length
+			if (snake.segments() < GameplaySettings.MIN_SNAKE_LENGTH_FOR_SPECIAL_FOOD && food.amount() < 0f) {
+				food.spawn(viewportWidth, viewportHeight)
+			}
+
 			isSceneChanged = true
 		}
 
@@ -325,7 +337,7 @@ class Gameplay {
 		}
 
 		val drawCommands = mutableListOf<DrawCommand>()
-		drawCommands.addAll(snake.draw())
+		drawCommands.addAll(snake.draw(now))
 		drawCommands.addAll(food.draw())
 		currentFrame = GameFrame(Ground.BACKGROUND, drawCommands)
 	}

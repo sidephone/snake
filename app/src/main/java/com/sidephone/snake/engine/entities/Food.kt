@@ -1,52 +1,49 @@
 package com.sidephone.snake.engine.entities
 
+import com.sidephone.snake.engine.entities.food.Apple
+import com.sidephone.snake.engine.entities.food.Burger
+import com.sidephone.snake.engine.entities.food.IceCream
+import com.sidephone.snake.engine.entities.food.Chicken
+import com.sidephone.snake.engine.entities.food.Egg
+import com.sidephone.snake.engine.entities.food.Fish
+import com.sidephone.snake.engine.entities.food.FoodTypeInterface
+import com.sidephone.snake.engine.entities.food.Mushroom
+import com.sidephone.snake.engine.entities.food.Pineapple
+import com.sidephone.snake.engine.entities.food.Pizza
+import com.sidephone.snake.engine.entities.food.Poop
+import com.sidephone.snake.engine.entities.food.Watermelon
 import com.sidephone.snake.engine.graphics.DrawCommand
 
 class Food {
 	companion object {
-		const val COLOR: Int = 0xFF00FF00.toInt()
+		const val BASE_RADIUS = 15f
 	}
 
+	private val foodTypes = listOf(Apple, Burger, Chicken, Egg, Fish, IceCream, Mushroom, Pineapple, Pizza, Poop, Watermelon)
+
 	private var amount = 0f
-	private var radius = 0f
-	private var position: Pair<Float, Float> = Pair(0f, 0f)
+	private var foodType: FoodTypeInterface = Apple
+	private var x = 0f
+	private var y = 0f
 
 
 	fun amount(): Float { return amount }
-	fun exists(): Boolean { return amount > 0f }
-	fun position(): Pair<Float, Float> { return position }
-	fun radius(): Float { return radius }
-
-
-	fun destroy() {
-		amount = 0f
-	}
-
+	fun destroy() { amount = 0f }
+	fun draw(): List<DrawCommand> { return foodType.draw(x, y) }
+	fun exists(): Boolean { return amount != 0f }
+	fun position(): Pair<Float, Float> { return Pair(x, y) }
+	fun radius(): Float { return foodType.radius() }
 
 	fun spawn(screenWidth: Float, screenHeight: Float) {
-		amount = 0.5f + Math.random().toFloat() * 1.5f
-		radius = amount * Snake.SEGMENT_RADIUS
+		foodType = foodTypes.random()
+		amount = foodType.amount()
+
+		foodType.randomizeRadius()
+		val radius = foodType.radius()
 
 		val maxX = (screenWidth - radius * 4f).coerceAtLeast(0f)
 		val maxY = (screenHeight - radius * 4f).coerceAtLeast(0f)
-		val x = radius * 2f + (Math.random().toFloat() * maxX)
-		val y = radius * 2f + (Math.random().toFloat() * maxY)
-
-		position = Pair(x, y)
-	}
-
-
-	fun draw(): List<DrawCommand> {
-		if (amount == 0f) return emptyList()
-
-		return listOf(
-			DrawCommand.Circle(
-				cx = position.first,
-				cy = position.second,
-				radius = amount * Snake.SEGMENT_RADIUS,
-				color = COLOR,
-				filled = true
-			)
-		)
+		x = radius * 2f + (Math.random().toFloat() * maxX)
+		y = radius * 2f + (Math.random().toFloat() * maxY)
 	}
 }

@@ -8,26 +8,41 @@ import kotlin.math.sqrt
 
 
 class Snake {
-	private val LOG_TAG = Snake::class.java.simpleName
-
-	enum class Direction { UP, DOWN, LEFT, RIGHT }
-
 	companion object {
+		private val LOG_TAG = Snake::class.java.simpleName
+
 		const val INITIAL_LENGTH = 3.5
-		const val SEGMENT_RADIUS = 10f
-		const val SEGMENT_RADIUS_MIN = SEGMENT_RADIUS * 0.4f
-		const val MOVE_SPEED = SEGMENT_RADIUS * 2 // px per iteration
+		const val MOVE_SPEED = Segment.RADIUS * 2 // px per iteration
+
+		object Segment {
+			const val RADIUS = 10f
+			const val RADIUS_MIN = RADIUS * 0.4f
+		}
+
+		object Tongue {
+			const val LENGTH = Segment.RADIUS * 0.8f
+			const val FORK_LENGTH = Segment.RADIUS * 0.25f
+			const val STICK_OUT_BASE_TIME = 500L // milliseconds
+
+			const val STICK_OUT_FORCED_PROBABILITY = 0.3 // 30% chance
+			const val STICK_OUT_NATURALLY_PROBABILITY = 0.15 // 15% chance
+		}
 
 		object Colors {
-			const val HEAD: Int = 0xFFFFFF00.toInt()
-			const val BODY: Int = 0xFFFFAA00.toInt()
+			const val HEAD: Int = 0xFFB7F34A.toInt()
+			const val BODY: Int = 0xFF72C93D.toInt()
+			const val TONGUE: Int = 0xFFFF3935.toInt()
 		}
 	}
+
+	enum class Direction { UP, DOWN, LEFT, RIGHT }
 
 	private var direction = Direction.UP
 	private var segments = mutableListOf<Pair<Float, Float>>() // List of (x, y) positions of the snake segments
 	private var length = INITIAL_LENGTH
 	private var isAlive = true
+
+	private var tongueTimeout = -1L
 
 
 	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
@@ -61,8 +76,8 @@ class Snake {
 		isAlive = true
 
 		// head position
-		val startX = (SEGMENT_RADIUS * 2f) + (Math.random() * (screenWidth - SEGMENT_RADIUS * 4)).toFloat()
-		val startY = (SEGMENT_RADIUS * 2f) + (Math.random() * (screenHeight - SEGMENT_RADIUS * 4)).toFloat()
+		val startX = (Segment.RADIUS * 2f) + (Math.random() * (screenWidth - Segment.RADIUS * 4)).toFloat()
+		val startY = (Segment.RADIUS * 2f) + (Math.random() * (screenHeight - Segment.RADIUS * 4)).toFloat()
 		direction = when {
 			startX < screenWidth / 2 && startY < screenHeight / 2 -> Direction.RIGHT // Top-left quadrant
 			startX >= screenWidth / 2 && startY < screenHeight / 2 -> Direction.DOWN // Top-right quadrant
@@ -122,6 +137,27 @@ class Snake {
 	}
 
 
+	fun toggleTongueRandomly(now: Long, isTurning: Boolean) {
+		if (isTongueOut(now)) {
+			return
+		}
+
+		val chance = Math.random()
+		if (
+			(isTurning && chance < Tongue.STICK_OUT_FORCED_PROBABILITY)
+			|| (!isTurning && chance < Tongue.STICK_OUT_NATURALLY_PROBABILITY)
+		) {
+			val duration = (Math.random() * Tongue.STICK_OUT_BASE_TIME).toLong().coerceAtLeast(1L)
+			tongueTimeout = now + duration
+		}
+	}
+
+
+	fun isTongueOut(now: Long): Boolean {
+		return tongueTimeout - now > 0
+	}
+
+
 	fun canEat(food: Food): Boolean {
 		val head = segments.firstOrNull() ?: Pair(0f, 0f)
 		val foodPos = food.position()
@@ -129,36 +165,179 @@ class Snake {
 		val distanceY = head.second - foodPos.second
 
 		val distance = sqrt((distanceX * distanceX + distanceY * distanceY).toDouble())
-		return distance <= SEGMENT_RADIUS + food.radius()
+		return distance <= Segment.RADIUS + food.radius()
 	}
 
 
 	fun eat(food: Food) {
 		length += food.amount()
+
 		val newSegmentCount = ceil(length)
-		while (segments.size < newSegmentCount) {
-			segments.add(segments.last())
+
+		if (newSegmentCount <= 0) {
+			segments.clear()
+			isAlive = false
+		} else if (segments.size < newSegmentCount) {
+			while (segments.size < newSegmentCount) {
+				segments.add(segments.last())
+			}
+		} else if (segments.size > newSegmentCount) {
+			while (segments.size > newSegmentCount) {
+				segments.removeAt(segments.size - 1)
+			}
 		}
 
 		Log.d(LOG_TAG, "Snake ate ${food.amount()}. New length: $length, segments: ${segments.size}")
 	}
 
 
-	fun draw(): List<DrawCommand> {
+	fun draw(now: Long): List<DrawCommand> {
+		return drawBody() + drawTongue(now)
+	}
+
+
+	private fun drawBody(): List<DrawCommand> {
 		val drawCommands = mutableListOf<DrawCommand>()
 
 		for (i in segments.size - 1 downTo 0) {
-			var radius = SEGMENT_RADIUS
+			var radius = Segment.RADIUS
 			if (i == segments.size - 1) {
 				val lengthExp = floor(length)
 				val radiusMultiplier = if (lengthExp == length) 1 else (length - lengthExp)
-				radius = (SEGMENT_RADIUS * radiusMultiplier.toFloat()).coerceAtLeast(SEGMENT_RADIUS_MIN)
+				radius = (Segment.RADIUS * radiusMultiplier.toFloat()).coerceAtLeast(Segment.RADIUS_MIN)
 			}
 
 			val color = if (i == 0) Colors.HEAD else Colors.BODY
 			val (x, y) = segments[i]
 
 			drawCommands.add(DrawCommand.Circle(x, y, radius, color, true))
+		}
+
+		return drawCommands
+	}
+
+
+	private fun drawTongue(now: Long): List<DrawCommand> {
+		if (!isTongueOut(now)) {
+			return emptyList()
+		}
+
+		val (x, y) = segments[0]
+
+		val drawCommands = mutableListOf<DrawCommand>()
+
+		when (direction) {
+			Direction.UP -> {
+				val tipY = y - Segment.RADIUS - Tongue.LENGTH
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, y - Segment.RADIUS,
+						x, tipY,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, tipY,
+						x - Tongue.FORK_LENGTH, tipY - Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, tipY,
+						x + Tongue.FORK_LENGTH, tipY - Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+			}
+
+			Direction.DOWN -> {
+				val tipY = y + Segment.RADIUS + Tongue.LENGTH
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, y + Segment.RADIUS,
+						x, tipY,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, tipY,
+						x - Tongue.FORK_LENGTH, tipY + Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x, tipY,
+						x + Tongue.FORK_LENGTH, tipY + Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+			}
+
+			Direction.LEFT -> {
+				val tipX = x - Segment.RADIUS - Tongue.LENGTH
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x - Segment.RADIUS, y,
+						tipX, y,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						tipX, y,
+						tipX - Tongue.FORK_LENGTH, y - Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						tipX, y,
+						tipX - Tongue.FORK_LENGTH, y + Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+			}
+
+			Direction.RIGHT -> {
+				val tipX = x + Segment.RADIUS + Tongue.LENGTH
+
+				drawCommands.add(
+					DrawCommand.Line(
+						x + Segment.RADIUS, y,
+						tipX, y,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						tipX, y,
+						tipX + Tongue.FORK_LENGTH, y - Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+
+				drawCommands.add(
+					DrawCommand.Line(
+						tipX, y,
+						tipX + Tongue.FORK_LENGTH, y + Tongue.FORK_LENGTH,
+						Colors.TONGUE
+					)
+				)
+			}
 		}
 
 		return drawCommands
