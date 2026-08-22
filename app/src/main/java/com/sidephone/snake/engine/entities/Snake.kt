@@ -11,6 +11,7 @@ class Snake {
 	companion object {
 		private val LOG_TAG = Snake::class.java.simpleName
 
+		const val EAT_ITERATIONS = 2
 		const val INITIAL_LENGTH = 3.5
 		const val MOVE_SPEED = Segment.RADIUS * 2 // px per iteration
 
@@ -34,6 +35,7 @@ class Snake {
 		object Colors {
 			const val HEAD: Int = 0xFFB7F34A.toInt()
 			const val BODY: Int = 0xFF72C93D.toInt()
+			const val MOUTH = Ground.BACKGROUND
 			const val TONGUE: Int = 0xFFFF3935.toInt()
 		}
 	}
@@ -47,6 +49,7 @@ class Snake {
 
 	private var tongueTimeout = -1L
 	private var isTongueLong = false
+	private var eatIterationsLeft = 0
 
 
 	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
@@ -178,6 +181,7 @@ class Snake {
 
 
 	fun eat(food: Food, now: Long) {
+		eatIterationsLeft = EAT_ITERATIONS
 		length = (length + food.amount()).coerceAtLeast(0.0)
 
 		val newSegmentCount = ceil(length)
@@ -203,7 +207,7 @@ class Snake {
 
 
 	fun draw(now: Long): List<DrawCommand> {
-		return drawBody() + drawTongue(now)
+		return drawBody() + drawMouth() + drawTongue(now)
 	}
 
 
@@ -228,8 +232,46 @@ class Snake {
 	}
 
 
-	fun drawTongue(now: Long): List<DrawCommand> {
-		if (!isTongueOut(now)) {
+	private fun drawMouth(): List<DrawCommand> {
+		if (segments.isEmpty() || eatIterationsLeft-- <= 0) {
+			return emptyList()
+		}
+
+		val (x, y) = segments.first()
+		var mouthAngle: Float
+		val mouthArc = if (eatIterationsLeft == 1) 90f else 60f
+
+		when (direction) {
+			Direction.UP -> {
+				mouthAngle = if (eatIterationsLeft == 1) -135f else -120f
+			}
+			Direction.RIGHT -> {
+				mouthAngle = if (eatIterationsLeft == 1) -45f else -30f
+			}
+			Direction.DOWN -> {
+				mouthAngle = if (eatIterationsLeft == 1) 45f else 60f
+			}
+			Direction.LEFT -> {
+				mouthAngle = if (eatIterationsLeft == 1) 135f else 150f
+			}
+		}
+
+		return listOf(
+			DrawCommand.Arc(
+				cx = x,
+				cy = y,
+				radius = Segment.RADIUS_HEAD,
+				startAngle = mouthAngle,
+				sweepAngle = mouthArc,
+				color = Colors.MOUTH,
+				filled = true
+			)
+		)
+	}
+
+
+	private fun drawTongue(now: Long): List<DrawCommand> {
+		if (!isTongueOut(now) || eatIterationsLeft > 0) {
 			return emptyList()
 		}
 
