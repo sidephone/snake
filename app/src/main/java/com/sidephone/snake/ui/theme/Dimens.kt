@@ -12,4 +12,6 @@ object Dimens {
 	val MainMenuButtonPaddingHorizontal = 32.dp
 
 	val PopupPadding = 8.dp
+
+	val HudPadding = 5.dp
 }
