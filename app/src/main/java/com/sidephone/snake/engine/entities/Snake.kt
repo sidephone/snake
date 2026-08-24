@@ -11,7 +11,9 @@ class Snake {
 	companion object {
 		private val LOG_TAG = Snake::class.java.simpleName
 
-		const val EAT_ITERATIONS = 2
+		const val EAT_TIME = 1000L / 15L * 2 + 5
+		const val EAT_CLOSE_MOUTH_TIME = 1000L / 15L + 5
+
 		const val INITIAL_LENGTH = 3.5
 		const val MOVE_SPEED = Segment.RADIUS * 2 // px per iteration
 
@@ -47,9 +49,9 @@ class Snake {
 	private var length = INITIAL_LENGTH
 	private var isAlive = true
 
+	private var mouthTimeout = 0L
 	private var tongueTimeout = -1L
 	private var isTongueLong = false
-	private var eatIterationsLeft = 0
 
 
 	fun isAlive(screenWidth: Float, screenHeight: Float): Boolean {
@@ -67,6 +69,11 @@ class Snake {
 		}
 
 		return isAlive
+	}
+
+
+	private fun isEating(now: Long): Boolean {
+		return now <= mouthTimeout
 	}
 
 
@@ -181,7 +188,7 @@ class Snake {
 
 
 	fun eat(food: Food, now: Long) {
-		eatIterationsLeft = EAT_ITERATIONS
+		mouthTimeout = now + EAT_TIME
 		length = (length + food.amount()).coerceAtLeast(0.0)
 
 		val newSegmentCount = ceil(length)
@@ -207,7 +214,7 @@ class Snake {
 
 
 	fun draw(now: Long): List<DrawCommand> {
-		return drawBody() + drawMouth() + drawTongue(now)
+		return drawBody() + drawMouth(now) + drawTongue(now)
 	}
 
 
@@ -232,28 +239,19 @@ class Snake {
 	}
 
 
-	private fun drawMouth(): List<DrawCommand> {
-		if (segments.isEmpty() || eatIterationsLeft-- <= 0) {
+	private fun drawMouth(now: Long): List<DrawCommand> {
+		if (segments.isEmpty() || !isEating(now)) {
 			return emptyList()
 		}
 
 		val (x, y) = segments.first()
-		var mouthAngle: Float
-		val mouthArc = if (eatIterationsLeft == 1) 90f else 60f
-
-		when (direction) {
-			Direction.UP -> {
-				mouthAngle = if (eatIterationsLeft == 1) -135f else -120f
-			}
-			Direction.RIGHT -> {
-				mouthAngle = if (eatIterationsLeft == 1) -45f else -30f
-			}
-			Direction.DOWN -> {
-				mouthAngle = if (eatIterationsLeft == 1) 45f else 60f
-			}
-			Direction.LEFT -> {
-				mouthAngle = if (eatIterationsLeft == 1) 135f else 150f
-			}
+		val timeToClose = now > mouthTimeout - EAT_CLOSE_MOUTH_TIME
+		val mouthArc = if (timeToClose) 60f else 90f
+		val mouthAngle: Float = when (direction) {
+			Direction.UP -> { if (timeToClose) -120f else -135f }
+			Direction.RIGHT -> { if (timeToClose) -30f else -45f }
+			Direction.DOWN -> { if (timeToClose) 60f else 45f }
+			Direction.LEFT -> { if (timeToClose) 150f else 135f }
 		}
 
 		return listOf(
@@ -271,7 +269,7 @@ class Snake {
 
 
 	private fun drawTongue(now: Long): List<DrawCommand> {
-		if (!isTongueOut(now) || eatIterationsLeft > 0) {
+		if (!isTongueOut(now) || isEating(now)) {
 			return emptyList()
 		}
 
