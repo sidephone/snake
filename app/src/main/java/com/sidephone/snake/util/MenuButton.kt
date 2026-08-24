@@ -3,6 +3,8 @@ package com.sidephone.snake.util
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.sidephone.snake.ui.theme.Dimens
 
 /**
  * The default Material3 Button highlighting when focused is too subtle. This defines more obvious
@@ -29,14 +32,20 @@ fun MenuButton(
 		interactionSource = interactionSource,
 		colors = ButtonDefaults.buttonColors(
 			// background color
-			containerColor = if (isFocused) MaterialTheme.colorScheme.secondaryContainer
-			else MaterialTheme.colorScheme.secondary,
+			containerColor = if (isFocused) MaterialTheme.colorScheme.secondary
+			else MaterialTheme.colorScheme.background,
 
 			// text color
-			contentColor = if (isFocused) MaterialTheme.colorScheme.onSecondaryContainer
-			else MaterialTheme.colorScheme.onSecondary
+			contentColor = if (isFocused) MaterialTheme.colorScheme.onSecondary
+			else MaterialTheme.colorScheme.onBackground
 		),
-		modifier = modifier,
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(
+				bottom = Dimens.MainMenuButtonPaddingBottom,
+				start = Dimens.MainMenuButtonPaddingHorizontal,
+				end = Dimens.MainMenuButtonPaddingHorizontal
+			),
 		content = content
 	)
 }

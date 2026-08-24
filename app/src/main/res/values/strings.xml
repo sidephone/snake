@@ -12,7 +12,7 @@
 	<string name="main_exit">Exit</string>
 	<string name="main_new_game">New Game</string>
 	<string name="main_resume_game">Resume Game</string>
-	<string name="main_end_game">End Current Game</string>
+	<string name="main_end_game">End Game</string>
 	<string name="main_high_scores">High Scores</string>
 	<string name="main_settings">Settings</string>
 

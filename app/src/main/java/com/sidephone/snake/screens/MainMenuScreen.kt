@@ -3,7 +3,6 @@ package com.sidephone.snake.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -44,7 +43,7 @@ fun MainMenuScreen(
 	) {
 		Text(
 			text = stringResource(R.string.app_name),
-			style = MaterialTheme.typography.headlineMedium,
+			style = MaterialTheme.typography.headlineLarge,
 			textAlign = TextAlign.Center,
 			modifier = Modifier.padding(
 				top = Dimens.MainMenuTitlePaddingTop,
@@ -53,19 +52,12 @@ fun MainMenuScreen(
 			color = MaterialTheme.colorScheme.onBackground
 		)
 
-		val buttonModifiers = Modifier
-			.fillMaxWidth()
-			.padding(
-				bottom = Dimens.MainMenuButtonPaddingBottom,
-				start = Dimens.MainMenuButtonPaddingHorizontal,
-				end = Dimens.MainMenuButtonPaddingHorizontal
-			)
-
 		val hasRequestedInitialFocus = remember { androidx.compose.runtime.mutableStateOf(false) }
 
 		MenuButton(
 			onClick = onNewGame,
-			modifier = buttonModifiers
+			modifier = Modifier
+				.gamepadClickableButton(onNewGame)
 				.focusRequester(firstButtonFocusRequester)
 				.onGloballyPositioned {
 					if (!hasRequestedInitialFocus.value) {
@@ -73,7 +65,6 @@ fun MainMenuScreen(
 						firstButtonFocusRequester.requestFocus()
 					}
 				}
-				.gamepadClickableButton(onNewGame)
 		) {
 			Text(stringResource(
 					if (isGamePaused) R.string.main_resume_game else R.string.main_new_game
@@ -83,7 +74,7 @@ fun MainMenuScreen(
 		if (isGamePaused) {
 			MenuButton(
 				onClick = onEndGame,
-				modifier = buttonModifiers.gamepadClickableButton(onEndGame)
+				modifier = Modifier.gamepadClickableButton(onEndGame)
 			) {
 				Text(stringResource(R.string.main_end_game))
 			}
@@ -92,7 +83,7 @@ fun MainMenuScreen(
 		if (!isGamePaused) {
 			MenuButton(
 				onClick = onSettings,
-				modifier = buttonModifiers.gamepadClickableButton(onSettings)
+				modifier = Modifier.gamepadClickableButton(onSettings)
 			) {
 				Text(stringResource(R.string.main_settings))
 			}
@@ -100,7 +91,7 @@ fun MainMenuScreen(
 
 		MenuButton(
 			onClick = onExit,
-			modifier = buttonModifiers.gamepadClickableButton(onExit)
+			modifier = Modifier.gamepadClickableButton(onExit)
 		) {
 			Text(stringResource(R.string.main_exit))
 		}
