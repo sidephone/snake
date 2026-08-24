@@ -1,6 +1,5 @@
 package com.sidephone.snake.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,8 +71,6 @@ fun SelectDifficultyScreen(
 				.onGloballyPositioned {
 					if (difficulty == Settings.Difficulty.EASY) {
 						easyFocusRequester.requestFocus()
-					} else {
-						Log.d("SelectDifficultyScreen", "$difficulty != EASY")
 					}
 				}
 		) {
@@ -94,8 +91,6 @@ fun SelectDifficultyScreen(
 				.onGloballyPositioned {
 					if (difficulty == Settings.Difficulty.MEDIUM) {
 						mediumFocusRequester.requestFocus()
-					} else {
-						Log.d("SelectDifficultyScreen", "$difficulty != MEDIUM")
 					}
 				}
 		) {
@@ -116,8 +111,6 @@ fun SelectDifficultyScreen(
 				.onGloballyPositioned {
 					if (difficulty == Settings.Difficulty.HARD) {
 						hardFocusRequester.requestFocus()
-					} else {
-						Log.d("SelectDifficultyScreen", "$difficulty != HARD")
 					}
 				}
 		) {

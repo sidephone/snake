@@ -6,6 +6,7 @@ A snake game for Sidephone
 - improve the settings screen
 - unify the title
 - add an icon
+- bump up the version info
 - allow playing with QWERTY
 - add README.md
 - fix continuous "lockCanvas" logs

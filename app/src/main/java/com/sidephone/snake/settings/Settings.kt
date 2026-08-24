@@ -79,7 +79,7 @@ class Settings(context: android.content.Context) {
 
 
 	/**
-	 * Returns the game speed as a percentage (0-100).
+	 * Returns the game speed as a percentage between GAME_SPEED_MIN and GAME_SPEED_MAX
 	 */
 	fun gameSpeed(): Int {
 		return sharedPreferences.getInt(GAME_SPEED_KEY, Difficulty.MEDIUM.speed)
