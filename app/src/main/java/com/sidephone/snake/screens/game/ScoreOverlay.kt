@@ -16,11 +16,11 @@ import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.ui.theme.Dimens
 
 @Composable
-fun ScoreOverlay(textColor: Color, gameplay: Gameplay) {
+fun ScoreOverlay(textColor: Color, highScore: Int, gameplay: Gameplay) {
 	val score by gameplay.score.collectAsState()
 
 	Text(
-		text = stringResource(id = R.string.game_score, score),
+		text = stringResource(id = R.string.game_score, score, highScore),
 		style = typography.bodyLarge,
 		color = textColor,
 		textAlign = TextAlign.Center,

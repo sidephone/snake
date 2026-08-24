@@ -3,7 +3,6 @@
 A snake game for Sidephone
 
 ## TODO
-- no high score list, just keep the highest one without a name
 - Game Speed -> difficulty before starting the game
 - add an icon
 - allow playing with QWERTY

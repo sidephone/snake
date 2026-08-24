@@ -14,7 +14,7 @@ import com.sidephone.snake.screens.ScreenType
 
 
 @Composable
-fun GameScreen(gameplay: Gameplay, currentScreen: ScreenType) {
+fun GameScreen(gameplay: Gameplay, highScore: Int, currentScreen: ScreenType) {
 	val hudTextColor = Color.White
 	val hudGameOverBackground = Color.Black.copy(alpha = 0.4f)
 	val menuBackground = MaterialTheme.colorScheme.background.toArgb()
@@ -33,5 +33,5 @@ fun GameScreen(gameplay: Gameplay, currentScreen: ScreenType) {
 		GameOverOverlay(hudTextColor, hudGameOverBackground)
 	}
 
-	ScoreOverlay(hudTextColor, gameplay)
+	ScoreOverlay(hudTextColor, highScore, gameplay)
 }

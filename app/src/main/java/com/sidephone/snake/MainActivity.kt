@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,10 +19,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
-import com.sidephone.snake.engine.HighScores
-import com.sidephone.snake.screens.highscores.HighScoresScreen
 import com.sidephone.snake.screens.MainMenuScreen
-import com.sidephone.snake.screens.RecordHighScoreScreen
 import com.sidephone.snake.screens.ScreenType
 import com.sidephone.snake.screens.settings.SettingsScreen
 import com.sidephone.snake.screens.game.GameScreen
@@ -45,31 +43,24 @@ class MainActivity : ComponentActivity() {
 			SidesnakeTheme {
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
-				var recordHighScore by remember { mutableStateOf<Int?>(null) }
-				val highScores = HighScores()
-
-				settings.loadHighScores(highScores)
+				var highScore by remember { mutableIntStateOf(settings.getHighScore()) }
 
 				// Back button/gesture returns to the menu from any sub-screen
 				BackHandler(enabled = currentScreen != ScreenType.Menu) {
 					if (currentScreen == ScreenType.Game) {
 						gameplay.onStartButton()
 					} else {
-						if (currentScreen == ScreenType.RecordHighScore) {
-							recordHighScore = null
-						}
 						currentScreen = ScreenType.Menu
 					}
 				}
 
 				Box(modifier = Modifier.fillMaxSize()) {
-					GameScreen(gameplay, currentScreen) // Keep this in memory due to an Android bug. See below.
+					GameScreen(gameplay, highScore, currentScreen) // Keep this in memory due to an Android bug. See below.
 
 					when (currentScreen) {
 						ScreenType.Menu -> MainMenuScreen(
 							isGamePaused = isGamePaused,
 							onExit = { finish() },
-							onHighScores = { currentScreen = ScreenType.HighScores },
 							onSettings = { currentScreen = ScreenType.Settings },
 							onEndGame = {
 								gameplay.stop()
@@ -84,28 +75,16 @@ class MainActivity : ComponentActivity() {
 
 								gameplay
 									.setOnStartButtonPressedCallback { isGameOver, score ->
+										currentScreen = ScreenType.Menu
 										isGamePaused = gameplay.isPaused()
-										if (isGameOver && highScores.isHighScore(score)) {
-											recordHighScore = score
-											currentScreen = ScreenType.RecordHighScore
-										} else {
-											currentScreen = ScreenType.Menu
+										if (isGameOver && settings.updateHighScoreIfNeeded(score)) {
+											highScore = score
 										}
 									}
 									.start()
 								},
 						)
 						ScreenType.Settings -> { SettingsScreen(settings, onBack = { currentScreen = ScreenType.Menu }) }
-						ScreenType.HighScores -> { HighScoresScreen(highScores, onBack = { currentScreen = ScreenType.Menu }) }
-						ScreenType.RecordHighScore -> RecordHighScoreScreen(
-							newScore = recordHighScore ?: 0,
-							onNameEntered = { playerName ->
-								highScores.addScore(playerName, recordHighScore ?: 0)
-								settings.saveHighScores(highScores)
-								recordHighScore = null
-								currentScreen = ScreenType.Menu
-							}
-						)
 						ScreenType.Game -> {
 						// Due to an Android bug, we initialize the screen at the beginning and keep the
 						// object alive all the time. Otherwise, we can't make it render after returning from

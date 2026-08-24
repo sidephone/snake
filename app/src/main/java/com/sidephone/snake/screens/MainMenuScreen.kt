@@ -29,7 +29,6 @@ fun MainMenuScreen(
 	isGamePaused: Boolean = false,
 	onNewGame: () -> Unit,
 	onEndGame: () -> Unit,
-	onHighScores: () -> Unit,
 	onSettings: () -> Unit,
 	onExit: () -> Unit
 ) {
@@ -88,13 +87,6 @@ fun MainMenuScreen(
 			) {
 				Text(stringResource(R.string.main_end_game))
 			}
-		}
-
-		MenuButton(
-			onClick = onHighScores,
-			modifier = buttonModifiers.gamepadClickableButton(onHighScores)
-		) {
-			Text(stringResource(R.string.main_high_scores))
 		}
 
 		if (!isGamePaused) {

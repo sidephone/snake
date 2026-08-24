@@ -2,7 +2,6 @@ package com.sidephone.snake.settings
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.sidephone.snake.engine.HighScores
 
 class Settings(context: android.content.Context) {
 	companion object {
@@ -10,8 +9,7 @@ class Settings(context: android.content.Context) {
 
 		private const val FOOD_STAYS_UNTIL_EATEN_KEY = "food_stays_until_eaten"
 		private const val GAME_SPEED_KEY = "game_speed"
-		private const val HIGH_SCORES_NAME_PREFIX = "high_scores_name_"
-		private const val HIGH_SCORES_SCORE_PREFIX = "high_scores_score_"
+		private const val HIGH_SCORE_KEY = "high_score"
 
 		const val GAME_SPEED_MIN = 10
 		const val GAME_SPEED_MAX = 100
@@ -26,30 +24,23 @@ class Settings(context: android.content.Context) {
 
 
 	/**
-	 * Saves the high scores to the shared preferences.
+	 * Saves the new score if it is greater than the last one. Returns true if an update happened.
 	 */
-	fun saveHighScores(scores: HighScores) {
-		sharedPreferences.edit {
-			scores.getAll().forEachIndexed { index, (name, score) ->
-				putString("$HIGH_SCORES_NAME_PREFIX$index", name)
-				putInt("$HIGH_SCORES_SCORE_PREFIX$index", score)
-			}
+	fun updateHighScoreIfNeeded(newScore: Int): Boolean {
+		if (newScore > sharedPreferences.getInt(HIGH_SCORE_KEY, Int.MIN_VALUE)) {
+			sharedPreferences.edit { putInt(HIGH_SCORE_KEY, newScore) }
+			return true
 		}
+
+		return false
 	}
 
 
 	/**
-	 * Loads the high scores from the shared preferences.
+	 * Loads the current high score value
 	 */
-	fun loadHighScores(highScores: HighScores) {
-		highScores.clear()
-		for (i in 0 until HighScores.MAX) {
-			val name = sharedPreferences.getString("$HIGH_SCORES_NAME_PREFIX$i", null)
-			val score = sharedPreferences.getInt("$HIGH_SCORES_SCORE_PREFIX$i", -1)
-			if (name != null && score >= 0) {
-				highScores.addScore(name, score)
-			}
-		}
+	fun getHighScore(): Int {
+		return sharedPreferences.getInt(HIGH_SCORE_KEY, 0)
 	}
 
 
