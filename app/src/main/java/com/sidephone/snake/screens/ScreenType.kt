@@ -1,5 +1,5 @@
 package com.sidephone.snake.screens
 
 enum class ScreenType {
-	Menu, Game, Settings
+	Menu, Game, SelectDifficulty, Settings
 }

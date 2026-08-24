@@ -40,10 +40,6 @@ fun SettingsScreen(settings: Settings, onBack: () -> Unit) {
 		)
 
 		FoodStaysOption(settings)
-		GameSpeedDropdown(
-        initialSpeed = settings.gameSpeed(),
-        onSpeedSelected = { speed -> settings.setGameSpeed(speed) }
-    )
 		BackToMainButton(onBack)
 	}
 }

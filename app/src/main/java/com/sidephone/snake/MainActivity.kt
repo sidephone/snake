@@ -21,8 +21,9 @@ import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
 import com.sidephone.snake.screens.MainMenuScreen
 import com.sidephone.snake.screens.ScreenType
-import com.sidephone.snake.screens.settings.SettingsScreen
+import com.sidephone.snake.screens.SelectDifficultyScreen
 import com.sidephone.snake.screens.game.GameScreen
+import com.sidephone.snake.screens.settings.SettingsScreen
 import com.sidephone.snake.settings.Settings
 import com.sidephone.snake.ui.theme.SidesnakeTheme
 
@@ -67,23 +68,32 @@ class MainActivity : ComponentActivity() {
 								isGamePaused = gameplay.isPaused()
 							},
 							onNewGame = {
-								currentScreen = ScreenType.Game
-
 								gamepad.reset()
 
 								if (!gameplay.isPaused()) gameplay.reset()
 
-								gameplay
-									.setOnStartButtonPressedCallback { isGameOver, score ->
+								gameplay.setOnStartButtonPressedCallback { isGameOver, score ->
 										currentScreen = ScreenType.Menu
 										isGamePaused = gameplay.isPaused()
 										if (isGameOver && settings.updateHighScoreIfNeeded(score)) {
 											highScore = score
 										}
 									}
-									.start()
+
+									if (gameplay.isPaused()) {
+										currentScreen = ScreenType.Game
+										gameplay.start()
+									} else {
+										currentScreen = ScreenType.SelectDifficulty
+									}
 								},
 						)
+						ScreenType.SelectDifficulty -> SelectDifficultyScreen(settings = settings, onSelectDifficulty = { difficulty ->
+							currentScreen = ScreenType.Game
+							settings.setDifficulty(difficulty)
+							gameplay.setSpeed(settings.gameSpeed())
+							gameplay.start()
+						})
 						ScreenType.Settings -> { SettingsScreen(settings, onBack = { currentScreen = ScreenType.Menu }) }
 						ScreenType.Game -> {
 						// Due to an Android bug, we initialize the screen at the beginning and keep the

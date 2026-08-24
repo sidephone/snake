@@ -28,11 +28,11 @@ class Gameplay(private val settings: Settings?) {
 	}
 
 	// game loop
-	private var gameSpeed = 100
 	private var foodStaysUntilEaten = true
 	private var executor = Executors.newSingleThreadScheduledExecutor()
 	private var engineLooper: Future<*>? = null
 	@Volatile private var isPaused = false
+	@Volatile private var speedFactor = 100
 
 	// input
 	@Volatile private var pressedKeys = setOf<Int>()
@@ -78,7 +78,6 @@ class Gameplay(private val settings: Settings?) {
 		currentFrame = GameFrame(Ground.BACKGROUND, emptyList())
 		pressedKeys = setOf()
 
-		gameSpeed = settings?.gameSpeed() ?: gameSpeed
 		iteration = 0
 		_isGameOver.value = false
 		_score.value = 0
@@ -102,6 +101,14 @@ class Gameplay(private val settings: Settings?) {
 	fun onPressedKeys(keys: Set<Int>) {
 		pressedKeys = keys.toSet() // make a copy for thread safety
 		preprocessInput()
+	}
+
+
+	@MainThread
+	fun setSpeed(speed: Int) {
+		val gameSpeed = speed.coerceIn(Settings.GAME_SPEED_MIN, Settings.GAME_SPEED_MAX)
+		speedFactor = (100f / gameSpeed).roundToInt().coerceAtLeast(1)
+		Log.d(LOG_TAG, "Game speed changed to $gameSpeed, factor=$speedFactor")
 	}
 
 
@@ -252,7 +259,6 @@ class Gameplay(private val settings: Settings?) {
 			// the standard movement speed is too fast to be playable, so we skip rendering some frames,
 			// to reduce the perceived game speed
 			iteration++
-			val speedFactor = (100f / gameSpeed).roundToInt().coerceAtLeast(1)
 			if (iteration % speedFactor == 0) {
 				render()
 			}

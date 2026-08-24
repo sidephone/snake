@@ -15,6 +15,21 @@ class Settings(context: android.content.Context) {
 		const val GAME_SPEED_MAX = 100
 	}
 
+	enum class Difficulty(val speed: Int) {
+		EASY(30),
+		MEDIUM(50),
+		HARD(100);
+
+		companion object {
+			/**
+			 * Returns the Difficulty whose defined speed is closest to the given value.
+			 */
+			fun fromSpeed(speed: Int): Difficulty {
+				return entries.minByOrNull { kotlin.math.abs(it.speed - speed) } ?: MEDIUM
+			}
+		}
+	}
+
 	object Gameplay {
 		const val TARGET_FPS = 30 // Rendering frames per second. Use multiples of the device screen refresh rate for better performance
 		const val TARGET_IPS = 15 // Advance game logic N iterations per second. Indirectly affects the FPS
@@ -67,18 +82,26 @@ class Settings(context: android.content.Context) {
 	 * Returns the game speed as a percentage (0-100).
 	 */
 	fun gameSpeed(): Int {
-		return sharedPreferences.getInt(GAME_SPEED_KEY, 50)
+		return sharedPreferences.getInt(GAME_SPEED_KEY, Difficulty.MEDIUM.speed)
 	}
 
 
 	/**
-	 * Sets the game speed as a percentage. Clamped to [10, 100] to guard against
-	 * invalid values reaching the game engine (e.g. from a malformed UI state).
+	 * Returns the game speed as a Difficulty enum value. The speed is clamped to the closest defined
+	 * Difficulty if it doesn't match any exactly.
 	 */
-	fun setGameSpeed(speed: Int) {
-		val clampedSpeed = speed.coerceIn(GAME_SPEED_MIN, GAME_SPEED_MAX)
-		sharedPreferences.edit {
-			putInt(GAME_SPEED_KEY, clampedSpeed)
-		}
+	fun getDifficulty(): Difficulty {
+		val speed = gameSpeed()
+		return Difficulty.fromSpeed(speed)
+	}
+
+
+	/**
+	 * Sets the game speed as Difficulty enum value. For safety, the speed is clamped to
+	 * [GAME_SPEED_MIN, GAME_SPEED_MAX].
+	 */
+	fun setDifficulty(difficulty: Difficulty) {
+		val clampedSpeed = difficulty.speed.coerceIn(GAME_SPEED_MIN, GAME_SPEED_MAX)
+		sharedPreferences.edit { putInt(GAME_SPEED_KEY, clampedSpeed) }
 	}
 }
