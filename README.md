@@ -3,8 +3,10 @@
 A snake game for Sidephone
 
 ## TODO
-- Game Speed -> difficulty before starting the game
+- improve the settings screen
+- unify the title
 - add an icon
+- bump up the version info
 - allow playing with QWERTY
 - add README.md
 - fix continuous "lockCanvas" logs
