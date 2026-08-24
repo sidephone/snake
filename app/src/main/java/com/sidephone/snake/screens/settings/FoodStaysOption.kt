@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import com.sidephone.snake.R
 import com.sidephone.snake.settings.Settings
 import com.sidephone.snake.ui.theme.Dimens
-import com.sidephone.snake.util.gamepadClickableButton
+import com.sidephone.snake.ui.modifiers.gamepadClickableButton
 
 
 @Composable
