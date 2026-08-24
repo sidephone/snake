@@ -1,4 +1,4 @@
-package com.sidephone.snake.util
+package com.sidephone.snake.ui.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.sidephone.snake.R
+import com.sidephone.snake.ui.modifiers.gamepadClickableButton
 import com.sidephone.snake.ui.theme.Dimens
 
 @Composable

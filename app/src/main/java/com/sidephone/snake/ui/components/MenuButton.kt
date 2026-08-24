@@ -1,4 +1,4 @@
-package com.sidephone.snake.util
+package com.sidephone.snake.ui.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState

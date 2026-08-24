@@ -1,4 +1,4 @@
-package com.sidephone.snake.util
+package com.sidephone.snake.ui.modifiers
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.KeyEvent

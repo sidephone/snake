@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,11 +15,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.sidephone.snake.R
+import com.sidephone.snake.ui.components.MenuButton
+import com.sidephone.snake.ui.components.MenuTitle
+import com.sidephone.snake.ui.modifiers.gamepadClickableButton
 import com.sidephone.snake.ui.theme.Dimens
-import com.sidephone.snake.util.MenuButton
-import com.sidephone.snake.util.gamepadClickableButton
 
 @Composable
 fun MainMenuScreen(
@@ -41,16 +40,7 @@ fun MainMenuScreen(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Top,
 	) {
-		Text(
-			text = stringResource(R.string.app_name),
-			style = MaterialTheme.typography.headlineLarge,
-			textAlign = TextAlign.Center,
-			modifier = Modifier.padding(
-				top = Dimens.MainMenuTitlePaddingTop,
-				bottom = Dimens.MainMenuTitlePaddingBottom
-			),
-			color = MaterialTheme.colorScheme.onBackground
-		)
+		MenuTitle(stringResource(R.string.app_name))
 
 		val hasRequestedInitialFocus = remember { androidx.compose.runtime.mutableStateOf(false) }
 
