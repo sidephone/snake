@@ -11,8 +11,8 @@ class Snake {
 	companion object {
 		private val LOG_TAG = Snake::class.java.simpleName
 
-		const val EAT_TIME = 1000L / 15L * 2 + 5
-		const val EAT_CLOSE_MOUTH_TIME = 1000L / 15L + 5
+		const val EAT_TIME = 140L // ms
+		const val EAT_CLOSE_MOUTH_TIME = 70L // ms
 
 		const val INITIAL_LENGTH = 3.5
 		const val MOVE_SPEED = Segment.RADIUS * 2 // px per iteration
@@ -207,6 +207,7 @@ class Snake {
 
 			isTongueLong = true
 			tongueTimeout = now + Tongue.STICK_OUT_LONG_TIME
+			mouthTimeout = tongueTimeout
 		}
 
 		Log.d(LOG_TAG, "Snake ate ${food.amount()}. New length: $length, segments: ${segments.size}")
@@ -269,7 +270,7 @@ class Snake {
 
 
 	private fun drawTongue(now: Long): List<DrawCommand> {
-		if (!isTongueOut(now) || isEating(now)) {
+		if (!isTongueOut(now) || (isEating(now) && !isTongueLong)) {
 			return emptyList()
 		}
 
