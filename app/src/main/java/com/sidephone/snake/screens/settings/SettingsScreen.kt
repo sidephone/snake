@@ -31,7 +31,7 @@ fun SettingsScreen(settings: Settings, onBack: () -> Unit) {
 	) {
 		Text(
 			text = stringResource(R.string.main_settings),
-			style = typography.headlineMedium,
+			style = typography.headlineLarge,
 			modifier = Modifier.padding(
 				top = Dimens.MainMenuTitlePaddingTop,
 				bottom = Dimens.MainMenuTitlePaddingBottom

@@ -8,8 +8,8 @@ object Dimens {
 
 	val MainMenuButtonContainerPadding = 24.dp
 
-	val MainMenuButtonPaddingBottom = 12.dp
-	val MainMenuButtonPaddingHorizontal = 32.dp
+	val MainMenuButtonPaddingBottom = 0.dp
+	val MainMenuButtonPaddingHorizontal = 24.dp
 
 	val PopupPadding = 8.dp
 

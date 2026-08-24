@@ -1,6 +1,5 @@
 package com.sidephone.snake.util
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,13 +13,7 @@ fun BackToMainButton(onBack: () -> Unit) {
 	MenuButton(
 		onClick = onBack,
 		modifier = Modifier
-			.fillMaxWidth()
-			.padding(
-				top = Dimens.MainMenuTitlePaddingBottom,
-				bottom = Dimens.MainMenuButtonPaddingBottom,
-				start = Dimens.MainMenuButtonPaddingHorizontal,
-				end = Dimens.MainMenuButtonPaddingHorizontal
-			)
+			.padding(top = Dimens.MainMenuTitlePaddingBottom)
 			.gamepadClickableButton(onBack)
 	) {
 		Text(stringResource(R.string.main_back))
