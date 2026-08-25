@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sidephone.snake.engine.Gamepad
 import com.sidephone.snake.engine.Gameplay
-import com.sidephone.snake.screens.MainMenuScreen
+import com.sidephone.snake.screens.main.MainMenuScreen
 import com.sidephone.snake.screens.ScreenType
 import com.sidephone.snake.screens.SelectDifficultyScreen
 import com.sidephone.snake.screens.game.GameScreen
