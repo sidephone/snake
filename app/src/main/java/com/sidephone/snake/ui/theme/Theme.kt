@@ -22,7 +22,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun SidesnakeTheme(
+fun SnakeTheme(
 	darkTheme: Boolean = isSystemInDarkTheme(),
 	dynamicColor: Boolean = true, // always available, since we are targeting Android 12+
 	content: @Composable () -> Unit
