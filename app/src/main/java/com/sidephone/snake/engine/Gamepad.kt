@@ -34,20 +34,31 @@ class Gamepad {
 	}
 
 
+	/**
+	 * Clears the list of pressed keys. Useful if restarting the game loop, for example, after pause.
+	 */
 	fun reset() {
 		pressedKeys.clear()
 	}
 
 
+	/**
+	 * Returns true when we want to handle this key, or false when we want to ignore it.
+	 */
 	private fun hasKey(keyCode: Int): Boolean {
 		return when (keyCode) {
+			// compact-qwerty
+			KeyEvent.KEYCODE_T,
+			KeyEvent.KEYCODE_D,
+			KeyEvent.KEYCODE_J,
+			KeyEvent.KEYCODE_B,
+			KeyEvent.KEYCODE_ENTER,
 			// numpad
 			KeyEvent.KEYCODE_2,
 			KeyEvent.KEYCODE_4,
 			KeyEvent.KEYCODE_6,
 			KeyEvent.KEYCODE_8,
 			KeyEvent.KEYCODE_DPAD_CENTER,
-			KeyEvent.KEYCODE_ENTER,
 			// sundial
 			KeyEvent.KEYCODE_MEDIA_NEXT,
 			KeyEvent.KEYCODE_MEDIA_PREVIOUS,
@@ -60,9 +71,9 @@ class Gamepad {
 			KeyEvent.KEYCODE_BUTTON_SELECT,
 			KeyEvent.KEYCODE_BUTTON_START,
 			KeyEvent.KEYCODE_DPAD_UP,
-			KeyEvent.KEYCODE_DPAD_DOWN,
 			KeyEvent.KEYCODE_DPAD_LEFT,
-			KeyEvent.KEYCODE_DPAD_RIGHT -> true
+			KeyEvent.KEYCODE_DPAD_RIGHT,
+			KeyEvent.KEYCODE_DPAD_DOWN -> true
 			else -> false
 		}
 	}
@@ -73,11 +84,11 @@ class Gamepad {
 	 */
 	private fun normalizeKeyCode(keyCode: Int): Int {
 		return when (keyCode) {
-			KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> KeyEvent.KEYCODE_BUTTON_START
-			KeyEvent.KEYCODE_MEDIA_NEXT, KeyEvent.KEYCODE_6 -> KeyEvent.KEYCODE_DPAD_RIGHT
-			KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_4 -> KeyEvent.KEYCODE_DPAD_LEFT
-			KeyEvent.KEYCODE_2 -> KeyEvent.KEYCODE_DPAD_UP
-			KeyEvent.KEYCODE_8 -> KeyEvent.KEYCODE_DPAD_DOWN
+			KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_MEDIA_PAUSE -> KeyEvent.KEYCODE_BUTTON_START
+			KeyEvent.KEYCODE_T, KeyEvent.KEYCODE_2 -> KeyEvent.KEYCODE_DPAD_UP
+			KeyEvent.KEYCODE_D, KeyEvent.KEYCODE_4, KeyEvent.KEYCODE_MEDIA_PREVIOUS -> KeyEvent.KEYCODE_DPAD_LEFT
+			KeyEvent.KEYCODE_J, KeyEvent.KEYCODE_6, KeyEvent.KEYCODE_MEDIA_NEXT -> KeyEvent.KEYCODE_DPAD_RIGHT
+			KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_8 -> KeyEvent.KEYCODE_DPAD_DOWN
 			else -> keyCode
 		}
 	}
