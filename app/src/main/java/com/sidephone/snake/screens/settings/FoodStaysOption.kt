@@ -72,7 +72,7 @@ fun FoodStaysOption(settings: Settings) {
 			) {
 				Text(
 					text = stringResource(R.string.settings_food_stays_title),
-					style = typography.bodyLarge,
+					style = typography.titleLarge,
 					color = if (isFocused) colorScheme.onSecondary
 					        else colorScheme.onBackground,
 				)
@@ -81,7 +81,7 @@ fun FoodStaysOption(settings: Settings) {
 						if (foodStaysUntilEaten) R.string.settings_food_stays_on_summary
 						else R.string.settings_food_stays_off_summary
 					),
-					style = typography.bodySmall,
+					style = typography.titleMedium,
 					color = if (isFocused) colorScheme.onSecondary
 					        else colorScheme.onSurfaceVariant
 				)

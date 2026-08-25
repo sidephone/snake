@@ -2,16 +2,17 @@ package com.sidephone.snake.ui.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.sidephone.snake.ui.theme.Dimens
 
 /**
@@ -22,7 +23,7 @@ import com.sidephone.snake.ui.theme.Dimens
 fun MenuButton(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
-	content: @Composable RowScope.() -> Unit
+	text: Int
 ) {
 	val interactionSource = remember { MutableInteractionSource() }
 	val isFocused by interactionSource.collectIsFocusedAsState()
@@ -46,6 +47,10 @@ fun MenuButton(
 				start = Dimens.MainMenuButtonPaddingHorizontal,
 				end = Dimens.MainMenuButtonPaddingHorizontal
 			),
-		content = content
-	)
+	) {
+		Text(
+			text = stringResource(text),
+			style = MaterialTheme.typography.titleLarge,
+		)
+	}
 }
