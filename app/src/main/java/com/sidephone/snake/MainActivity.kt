@@ -25,7 +25,7 @@ import com.sidephone.snake.screens.SelectDifficultyScreen
 import com.sidephone.snake.screens.game.GameScreen
 import com.sidephone.snake.screens.settings.SettingsScreen
 import com.sidephone.snake.settings.Settings
-import com.sidephone.snake.ui.theme.SidesnakeTheme
+import com.sidephone.snake.ui.theme.SnakeTheme
 
 class MainActivity : ComponentActivity() {
 	private val gamepad = Gamepad()
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 		switchToFullScreen()
 
 		setContent {
-			SidesnakeTheme {
+			SnakeTheme {
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
 				var highScore by remember { mutableIntStateOf(settings.getHighScore()) }
