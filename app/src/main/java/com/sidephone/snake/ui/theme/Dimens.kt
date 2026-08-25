@@ -8,7 +8,7 @@ object Dimens {
 
 	val MainMenuButtonContainerPadding = 24.dp
 
-	val MainMenuButtonPaddingBottom = 0.dp
+	val MainMenuButtonPaddingBottom = 3.dp
 	val MainMenuButtonPaddingHorizontal = 24.dp
 
 	val SettingsPreferenceWrapper = 0.dp

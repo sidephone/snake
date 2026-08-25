@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +47,7 @@ fun SelectDifficultyScreen(
 		MenuTitle(stringResource(R.string.difficulty_choose))
 
 		MenuButton(
+			text = R.string.difficulty_easy,
 			onClick = {
 				difficulty = Settings.Difficulty.EASY
 				onSelectDifficulty(Settings.Difficulty.EASY)
@@ -63,11 +63,10 @@ fun SelectDifficultyScreen(
 						easyFocusRequester.requestFocus()
 					}
 				}
-		) {
-			Text(stringResource(R.string.difficulty_easy))
-		}
+		)
 
 		MenuButton(
+			text = R.string.difficulty_medium,
 			onClick = {
 				difficulty = Settings.Difficulty.MEDIUM
 				onSelectDifficulty(Settings.Difficulty.MEDIUM)
@@ -83,11 +82,10 @@ fun SelectDifficultyScreen(
 						mediumFocusRequester.requestFocus()
 					}
 				}
-		) {
-			Text(stringResource(R.string.difficulty_medium))
-		}
+		)
 
 		MenuButton(
+			text = R.string.difficulty_hard,
 			onClick = {
 				difficulty = Settings.Difficulty.HARD
 				onSelectDifficulty(Settings.Difficulty.HARD)
@@ -103,8 +101,6 @@ fun SelectDifficultyScreen(
 						hardFocusRequester.requestFocus()
 					}
 				}
-		) {
-			Text(stringResource(R.string.difficulty_hard))
-		}
+		)
 	}
 }

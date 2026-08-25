@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,6 +45,7 @@ fun MainMenuScreen(
 
 		MenuButton(
 			onClick = onNewGame,
+			text = if (isGamePaused) R.string.main_resume_game else R.string.main_new_game,
 			modifier = Modifier
 				.gamepadClickableButton(onNewGame)
 				.focusRequester(firstButtonFocusRequester)
@@ -55,35 +55,28 @@ fun MainMenuScreen(
 						firstButtonFocusRequester.requestFocus()
 					}
 				}
-		) {
-			Text(stringResource(
-					if (isGamePaused) R.string.main_resume_game else R.string.main_new_game
-			))
-		}
+		)
 
 		if (isGamePaused) {
 			MenuButton(
 				onClick = onEndGame,
-				modifier = Modifier.gamepadClickableButton(onEndGame)
-			) {
-				Text(stringResource(R.string.main_end_game))
-			}
+				modifier = Modifier.gamepadClickableButton(onEndGame),
+				text = R.string.main_end_game
+			)
 		}
 
 		if (!isGamePaused) {
 			MenuButton(
 				onClick = onSettings,
-				modifier = Modifier.gamepadClickableButton(onSettings)
-			) {
-				Text(stringResource(R.string.main_settings))
-			}
+				modifier = Modifier.gamepadClickableButton(onSettings),
+				text = R.string.main_settings
+			)
 		}
 
 		MenuButton(
 			onClick = onExit,
-			modifier = Modifier.gamepadClickableButton(onExit)
-		) {
-			Text(stringResource(R.string.main_exit))
-		}
+			modifier = Modifier.gamepadClickableButton(onExit),
+			text = R.string.main_exit
+		)
 	}
 }
