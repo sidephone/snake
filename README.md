@@ -1,11 +1,13 @@
 # Snake
 
-A snake game for Sidephone
+A retro snake game for Sidephone SP-01 created to showcase the capabilities of the mini controller (gamepad) tile. Also, playable with the T9 and compact-QWERTY tiles using the D-pad or the 2, 4, 6, 8 keys.
 
-## TODO
-- bump up the version info
-- add README.md
-- fix continuous "lockCanvas" logs
+Feel free to use this as a more advanced example of how to create games for Sidephone. The project structure is explained in the [tutorial project](https://github.com/sidephone/demo-game).
+
+## Development Setup
+Just clone the project and import it in Android Studio. It has no external dependencies, so you can build and run it directly in the emulator or on a real device.
+
+Tested with Android Studio Quail 3 | 2026.1.3
 
 
 ## License
