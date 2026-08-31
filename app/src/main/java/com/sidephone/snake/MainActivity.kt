@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
 			SnakeTheme {
 				var currentScreen by remember { mutableStateOf(ScreenType.Menu) }
 				var isGamePaused by remember { mutableStateOf(false) }
-				var highScore by remember { mutableIntStateOf(settings.getHighScore()) }
+				var highScore by remember { mutableIntStateOf(0) }
 
 				// Back button/gesture returns to the menu from any sub-screen
 				BackHandler(enabled = currentScreen != ScreenType.Menu) {
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 								gameplay.setOnStartButtonPressedCallback { isGameOver, score ->
 										currentScreen = ScreenType.Menu
 										isGamePaused = gameplay.isPaused()
-										if (isGameOver && settings.updateHighScoreIfNeeded(score)) {
+										if (isGameOver && settings.updateHighScoreIfNeeded(score, gameplay.getSpeed())) {
 											highScore = score
 										}
 									}
@@ -90,7 +90,8 @@ class MainActivity : ComponentActivity() {
 						)
 						ScreenType.SelectDifficulty -> SelectDifficultyScreen(settings = settings, onSelectDifficulty = { difficulty ->
 							currentScreen = ScreenType.Game
-							settings.setDifficulty(difficulty)
+							highScore = settings.getHighScore(difficulty) // update the dashboard before starting the game
+							settings.setDifficulty(difficulty) // save it for the next time the user starts a new game
 							gameplay.setSpeed(settings.gameSpeed())
 							gameplay.start()
 						})

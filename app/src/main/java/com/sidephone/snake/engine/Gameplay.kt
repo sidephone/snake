@@ -32,6 +32,7 @@ class Gameplay(private val settings: Settings?) {
 	private var executor = Executors.newSingleThreadScheduledExecutor()
 	private var engineLooper: Future<*>? = null
 	@Volatile private var isPaused = false
+	private var speed = 100
 	@Volatile private var speedFactor = 100
 
 	// input
@@ -105,10 +106,16 @@ class Gameplay(private val settings: Settings?) {
 
 
 	@MainThread
-	fun setSpeed(speed: Int) {
-		val gameSpeed = speed.coerceIn(Settings.GAME_SPEED_MIN, Settings.GAME_SPEED_MAX)
-		speedFactor = (100f / gameSpeed).roundToInt().coerceAtLeast(1)
-		Log.d(LOG_TAG, "Game speed changed to $gameSpeed, factor=$speedFactor")
+	fun getSpeed(): Int {
+		return speed
+	}
+
+
+	@MainThread
+	fun setSpeed(newSpeed: Int) {
+		speed = newSpeed.coerceIn(Settings.GAME_SPEED_MIN, Settings.GAME_SPEED_MAX)
+		speedFactor = (100f / speed).roundToInt().coerceAtLeast(1)
+		Log.d(LOG_TAG, "Game speed changed to $speed, factor=$speedFactor")
 	}
 
 
