@@ -9,7 +9,7 @@ class Settings(context: android.content.Context) {
 
 		private const val FOOD_STAYS_UNTIL_EATEN_KEY = "food_stays_until_eaten"
 		private const val GAME_SPEED_KEY = "game_speed"
-		private const val HIGH_SCORE_KEY = "high_score"
+		private val HIGH_SCORE_KEY = { difficulty: Difficulty -> "high_score_${difficulty.name.lowercase()}" }
 
 		const val GAME_SPEED_MIN = 10
 		const val GAME_SPEED_MAX = 100
@@ -39,11 +39,13 @@ class Settings(context: android.content.Context) {
 
 
 	/**
-	 * Saves the new score if it is greater than the last one. Returns true if an update happened.
+	 * Saves the new score for the current difficulty level if it is greater than the last one.
+	 * Returns true if an update happened.
 	 */
-	fun updateHighScoreIfNeeded(newScore: Int): Boolean {
-		if (newScore > sharedPreferences.getInt(HIGH_SCORE_KEY, Int.MIN_VALUE)) {
-			sharedPreferences.edit { putInt(HIGH_SCORE_KEY, newScore) }
+	fun updateHighScoreIfNeeded(newScore: Int, gameSpeed: Int): Boolean {
+		val difficulty = Difficulty.fromSpeed(gameSpeed)
+		if (newScore > sharedPreferences.getInt(HIGH_SCORE_KEY(difficulty), Int.MIN_VALUE)) {
+			sharedPreferences.edit { putInt(HIGH_SCORE_KEY(difficulty), newScore) }
 			return true
 		}
 
@@ -52,10 +54,10 @@ class Settings(context: android.content.Context) {
 
 
 	/**
-	 * Loads the current high score value
+	 * Loads the current high score value for the given difficulty level, or 0 if none is set.
 	 */
-	fun getHighScore(): Int {
-		return sharedPreferences.getInt(HIGH_SCORE_KEY, 0)
+	fun getHighScore(difficulty: Difficulty): Int {
+		return sharedPreferences.getInt(HIGH_SCORE_KEY(difficulty), 0)
 	}
 
 
